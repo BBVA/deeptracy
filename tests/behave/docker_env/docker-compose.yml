@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  deeptracy:
+    build: ../../../
+    image: deeptracy/acceptance
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - BROKER_URI=redis://redis:6379/1
+      - DATABASE_URI=postgresql://postgres:postgres@postgres:5432/deeptracy_test
+      - SCAN_PATH=/tmp/deeptracy_test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/deeptracy_test:/tmp/deeptracy_test
+    privileged: true
+
+  postgres:
+    image: postgres:9.6-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis:3-alpine
+    ports:
+      - 6379:6379
