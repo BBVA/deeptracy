@@ -1,7 +1,7 @@
 Deeptracy
 =========
 
-*Deeptracy scans your project dependencies to spot vulnerabilities.
+Deeptracy scans your project dependencies to spot vulnerabilities.
 
 .. image::  https://raw.githubusercontent.com/BBVA/deeptracy/master/doc/source/_static/deeptracy-logo-small.png
     :alt: Deeptracy logo
@@ -20,19 +20,13 @@ Deeptracy
 Deeptracy in a few words
 ========================
 
-Is a meta tool to analyze the security Issues in third party libraries used in your project.
+Is a meta tool to analyze the security issues in third party libraries used in your project.
 
 Why?
 ====
 
-There're **many different tools for analyze third party vulnerabilities** for many languages, **but there're not a
+There're **many different tools for analyze third party vulnerabilities** for many languages, **but there is not a
 unique tool that works well for all of them**.
-
-This implies that:
-
-1. you need to locate the language specific tool,
-2. learn how use it,
-3. transform the results format to one you understand
 
 We've created **this project to simplify this process** and you can focus only in the important: your project.
 
