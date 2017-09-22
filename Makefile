@@ -70,7 +70,7 @@ install:
 
 .PHONY: docs
 docs: ## generate and shows documentation
-	@make -C docs spelling html
+	@make -C docs html
 
 .PHONY: run
 run: ## local run the app
