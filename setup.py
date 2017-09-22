@@ -8,7 +8,7 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, 'README.md')) as f:
+with open(path.join(here, 'README.rst')) as f:
     readme = f.read()
 
 requirements = [str(ir.req) for ir in parse_requirements('requirements.txt', session=PipSession())]
