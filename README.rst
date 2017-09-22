@@ -5,6 +5,7 @@ Deeptracy scans your project dependencies to spot vulnerabilities.
 
 .. image::  https://raw.githubusercontent.com/BBVA/deeptracy/develop/docs/_static/deeptracy-logo-small.png
     :alt: Deeptracy logo
+    :width: 250 px
 
 
 +----------------+----------------------------------------------+
