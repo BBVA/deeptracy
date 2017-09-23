@@ -37,7 +37,7 @@ the project dependencies.
 Documentation
 =============
 
-Go to documentation site: https://odsc.readthedocs.org/
+Go to documentation site: https://deeptracy.readthedocs.org/
 
 Contributing to Deeptracy
 =========================
