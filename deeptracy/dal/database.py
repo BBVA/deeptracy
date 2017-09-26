@@ -6,8 +6,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 from contextlib import contextmanager
 
+from sqlalchemy.ext.declarative import declarative_base
 from deeptracy.config import DATABASE_URI
-from deeptracy.dal.models import Base
 
 
 class DeeptracyDBEngine:
@@ -40,3 +40,4 @@ class DeeptracyDBEngine:
 
 
 db = DeeptracyDBEngine()
+Base = declarative_base()

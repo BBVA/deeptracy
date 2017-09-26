@@ -1,7 +1,6 @@
 from flask import Blueprint, request, Response, json
 
-from deeptracy.dal.project_manager import get_project_list
-from deeptracy.dal.project_manager import add_project
+from deeptracy.dal.project import get_project_list, add_project
 from deeptracy.dal.database import db
 
 project = Blueprint("project", __name__)

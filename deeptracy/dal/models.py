@@ -1,28 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import uuid
-
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 
-
-Base = declarative_base()
-
-
-def make_uuid() -> str:
-    return uuid.uuid4().hex
-
-
-class Project(Base):
-    """SQLAlchemy Project model"""
-    __tablename__ = 'project'
-
-    id = Column(String, primary_key=True, default=make_uuid)
-    lang = Column(String)
-    repo = Column(String)
-
-    scans = relationship('Scan')
+from deeptracy.utils import make_uuid
+from deeptracy.dal.database import Base
 
 
 class Scan(Base):

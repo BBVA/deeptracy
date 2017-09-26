@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy.orm import Session
-from deeptracy.dal.models import Project
+from deeptracy.dal.project import Project
 
 
 def get_project(project_id: str, session: Session) -> Project:
@@ -24,3 +24,6 @@ def add_project(session: Session, **kwargs):
     project = Project(**kwargs)
     session.add(project)
     return project
+
+
+__all__ = ['get_project', 'get_project_list', 'add_project', ]

@@ -1,5 +1,6 @@
 import requests
 import os
+import uuid
 
 
 def valid_repo(url: str):
@@ -44,3 +45,7 @@ def clone_repo(base_path: str, scan_id: str, repo_url: str) -> str:
 
     os.system('git clone {} {}'.format(repo_url, scan_path))
     return scan_path
+
+
+def make_uuid() -> str:
+    return uuid.uuid4().hex
