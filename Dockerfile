@@ -14,7 +14,7 @@ RUN rm -rf /tmp/install
 
 # add run script
 RUN mkdir /opt/deeptracy
-ADD run.sh /opt/deeptracy
-RUN chmod +x /opt/deeptracy/run.sh
+ADD run_celery.sh /opt/deeptracy
+RUN chmod +x /opt/deeptracy/run_celery.sh
 
-CMD ["/opt/deeptracy/run.sh"]
+CMD ["/opt/deeptracy/run_celery.sh"]

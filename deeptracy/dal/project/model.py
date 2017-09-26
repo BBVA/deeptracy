@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from marshmallow_sqlalchemy import ModelSchema
 
 import deeptracy.utils as utils
 from deeptracy.dal.database import Base
@@ -19,7 +17,9 @@ class Project(Base):
 
     scans = relationship(Scan)
 
-
-class ProjectSchema(ModelSchema):
-    class Meta:
-        model = Project
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'lang': self.lang,
+            'scans': len(self.scans)
+        }

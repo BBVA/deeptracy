@@ -2,7 +2,7 @@ version: '3'
 
 services:
   deeptracy:
-    build: ../../../
+    build: ../../
     image: deeptracy/acceptance
     depends_on:
       - redis

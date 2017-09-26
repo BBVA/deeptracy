@@ -13,4 +13,3 @@ redis==2.10.6
 #api
 Flask==0.12.2
 Flask-Cors==3.0.3
-marshmallow-sqlalchemy==0.13.1

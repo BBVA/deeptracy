@@ -10,7 +10,7 @@ project = Blueprint("project", __name__)
 def get_project():
     with db.session_scope() as session:
         project_list = get_project_list(session)
-        return Response(json.dumps(project_list), mimetype='application/json')
+        return json.dumps([item.to_dict() for item in project_list])
 
 
 @project.route("/add", methods=["POST"])

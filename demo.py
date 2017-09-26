@@ -3,10 +3,11 @@ import uuid
 from celery import Celery
 from celery.execute import send_task
 from deeptracy.dal.database import db
+from deeptracy.dal.project import Project
 from deeptracy.dal.models import Base
 
 db.init_engine()
-# Base.metadata.drop_all(bind=db.engine)
+Base.metadata.drop_all(bind=db.engine)
 Base.metadata.create_all(bind=db.engine)
 
 project_id = uuid.uuid4().hex

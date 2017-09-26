@@ -86,4 +86,4 @@ demo: ## local run the app
 
 .PHONY: behave
 behave: ## run behave tests
-	behave tests/behave/features
+	behave tests/acceptance/features

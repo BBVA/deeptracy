@@ -6,9 +6,10 @@ from celery.task.control import inspect
 from celery.execute import send_task
 from behave import given, when, then
 from deeptracy.dal.database import db
-from deeptracy.dal.models import Project, Scan, ScanAnalysis, ScanAnalysisVulnerability
+from deeptracy.dal.project import Project
+from deeptracy.dal.models import Scan, ScanAnalysis, ScanAnalysisVulnerability
 from deeptracy.plugins.retirejs import OUTPUT_FILE
-from tests.behave.environment import handle_errors
+from tests.acceptance.environment import handle_errors
 
 
 @given(u'a project with "{repo}" repo exists in the database')

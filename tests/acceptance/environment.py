@@ -5,7 +5,7 @@ from deeptracy.dal.models import Base
 
 
 def before_all(context):
-    os.system('docker-compose -f tests/behave/docker_env/docker-compose.yml up -d --build')
+    os.system('docker-compose -f tests/acceptance/docker-compose.yml up -d --build')
 
     # set environment
     database.DATABASE_URI = "postgresql://postgres:postgres@127.0.0.1:5432/deeptracy_test"
@@ -20,7 +20,7 @@ def before_all(context):
 
 def after_all(context):
     Base.metadata.drop_all(bind=database.db.engine)
-    os.system('docker-compose -f tests/behave/docker_env/docker-compose.yml stop')
+    os.system('docker-compose -f tests/behave/docker-compose.yml stop')
     os.system('rm -rf {}'.format(context.SCAN_PATH))
 
 

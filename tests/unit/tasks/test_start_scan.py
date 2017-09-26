@@ -3,7 +3,8 @@
 import deeptracy.tasks.start_scan as task
 from unittest import mock
 from unittest.mock import MagicMock, ANY
-from deeptracy.dal.models import Project, Scan, Plugin
+from deeptracy.dal.models import Scan, Plugin
+from deeptracy.dal.project import Project
 from tests.unit.base_test import BaseDeeptracyTest
 from tests.unit.mock_db import MockDeeptracyDBEngine
 
