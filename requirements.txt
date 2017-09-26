@@ -1,9 +1,15 @@
+#common
+requests==2.18.4
+SQLAlchemy-Utils==0.32.16
+
+#celery
 celery==4.1.0
 redis==2.10.6
-requests==2.18.4
 SQLAlchemy==1.1.14
-SQLAlchemy-Utils==0.32.16
 psycopg2==2.7.3.1
 pluginbase==0.5
 redis==2.10.6
 
+#api
+Flask==0.12.2
+Flask-Cors==3.0.3

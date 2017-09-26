@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from sqlalchemy.orm import Session
 from deeptracy.dal.models import Project
-from deeptracy.dal.database import db
 
 
-def get_project(project_id: str) -> Project:
+def get_project(project_id: str, session: Session) -> Project:
     """Get a project from its id"""
-    session = db.Session()
-
     if project_id is None:
         raise ValueError('Invalid project id {}'.format(project_id))
 
@@ -15,6 +13,14 @@ def get_project(project_id: str) -> Project:
     if project is None:
         raise ValueError('Project {} not found in database'.format(project_id))
 
-    session.close()
+    return project
 
+
+def get_project_list(session: Session):
+    return session.query(Project).all()
+
+
+def add_project(session: Session, **kwargs):
+    project = Project(**kwargs)
+    session.add(project)
     return project
