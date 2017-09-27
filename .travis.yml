@@ -5,6 +5,12 @@ services: docker
 python:
   - "3.6"
 
+before_install:
+  # shutdown postgresql service so we can use the port
+  - sudo service postgresql stop
+  # wait for postgresql to shutdown
+  - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
+
 install:
   - pip install -r requirements_test.txt
 
