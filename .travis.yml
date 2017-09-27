@@ -9,3 +9,4 @@ install: pip install tox
 
 script:
   - tox
+  - behave --no-capture --no-capture-stderr tests/acceptance/features
