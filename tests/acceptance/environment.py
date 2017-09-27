@@ -1,11 +1,14 @@
 import os
-import deeptracy.dal.database as database
+import time
 
-from deeptracy.dal.models import Base
+from celery import Celery
+import deeptracy.dal.database as database
 
 
 def before_all(context):
-    os.system('docker-compose -f tests/acceptance/docker-compose.yml up -d --build')
+    os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
+    os.system('docker-compose -f tests/acceptance/docker-compose.yml -p deeptracy_acceptance up -d --build')
+    time.sleep(5)
 
     # set environment
     database.DATABASE_URI = "postgresql://postgres:postgres@127.0.0.1:5432/deeptracy_test"
@@ -17,19 +20,10 @@ def before_all(context):
 
     database.db.init_engine()  # Init database engine
 
+    context.celery = Celery('deeptracy_test', broker=context.BROKER_URI)
+
 
 def after_all(context):
-    Base.metadata.drop_all(bind=database.db.engine)
-    os.system('docker-compose -f tests/behave/docker-compose.yml stop')
+    os.system('docker-compose -f tests/acceptance/docker-compose.yml kill')
+    os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
     os.system('rm -rf {}'.format(context.SCAN_PATH))
-
-
-def handle_errors(func):
-    def wrapper(context, *args, **kwargs):
-        try:
-            func(context, *args, **kwargs)
-        except Exception as e:
-            print(e)
-            after_all(context)
-
-    return wrapper

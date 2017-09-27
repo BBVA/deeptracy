@@ -6,22 +6,8 @@ from sqlalchemy.orm import relationship
 from deeptracy.utils import make_uuid
 from deeptracy.dal.database import Base
 
-
-class Scan(Base):
-    """SQLAlchemy Scan model"""
-    __tablename__ = 'scan'
-
-    id = Column(String, primary_key=True, default=make_uuid)
-    project_id = Column(String, ForeignKey('project.id'))
-    lang = Column(String)
-    analysis_count = Column(Integer)
-    analysis_done = Column(Integer)
-    state = Column(String)
-    source_path = Column(String)
-
-    scan_analysis = relationship('ScanAnalysis', lazy='subquery')
-    scan_vulnerability = relationship('ScanVulnerability', lazy='subquery')
-    project = relationship("Project", lazy='subquery')
+from deeptracy.dal.project import Project
+from deeptracy.dal.scan import Scan
 
 
 class Plugin(Base):

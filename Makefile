@@ -72,11 +72,11 @@ install:
 docs: ## generate and shows documentation
 	@make -C docs html
 
-.PHONY: run
+.PHONY: run_celery
 run_celery: ## local run celery workers
 	./run_celery.sh
 
-.PHONY: run
+.PHONY: run_api
 run_api: ## local run the API
 	./run_api.sh
 
@@ -86,4 +86,5 @@ demo: ## local run the app
 
 .PHONY: behave
 behave: ## run behave tests
-	behave tests/acceptance/features
+	behave --no-capture --no-capture-stderr tests/acceptance/features
+
