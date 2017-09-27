@@ -3,7 +3,7 @@ version: '3'
 services:
   deeptracy:
     build: ../../
-    image: deeptracy/acceptance
+    image: deeptracy
     depends_on:
       - redis
       - postgres
@@ -15,7 +15,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/deeptracy_test:/tmp/deeptracy_test
     privileged: true
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "/opt/deeptracy/run_celery.sh"]
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "/opt/deeptracy/run.sh"]
 
   postgres:
     image: postgres:9.6-alpine

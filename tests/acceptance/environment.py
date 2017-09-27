@@ -2,7 +2,7 @@ import os
 import time
 
 from celery import Celery
-import deeptracy.dal.database as database
+import deeptracy_core.dal.database as database
 
 
 def before_all(context):

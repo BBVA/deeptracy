@@ -9,3 +9,6 @@ Feature: RetireJS Plugin
     Then a scan folder with the cloned repo exists
     And the results for retirejs exists in a file in the scanned folder
     And the results for the scan in the database includes the results in the file
+
+
+

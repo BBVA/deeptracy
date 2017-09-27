@@ -2,9 +2,9 @@ import os
 import time
 
 from behave import given, when, then
-from deeptracy.dal.database import db
-from deeptracy.dal.project import Project
-from deeptracy.dal.models import Scan, ScanAnalysis, ScanAnalysisVulnerability
+from deeptracy_core.dal.database import db
+from deeptracy_core.dal.project import Project
+from deeptracy_core.dal.models import Scan, ScanAnalysis, ScanAnalysisVulnerability
 from deeptracy.plugins.retirejs import OUTPUT_FILE
 
 
@@ -33,6 +33,7 @@ def step_impl(context):
     i = context.celery.control.inspect()
     while True:
         active = i.active()
+        registered = i.registered()
         print('active ----- {}'.format(active))
         if active is None:
             time.sleep(5)

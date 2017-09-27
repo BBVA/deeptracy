@@ -4,12 +4,12 @@ from celery import task, chord
 
 import deeptracy.utils as utils
 from deeptracy.config import SCAN_PATH
-from deeptracy.dal.plugin_manager import get_plugins_for_lang
-from deeptracy.dal.scan_manager import get_scan, update_scan_state, ScanState
-from deeptracy.dal.scan_analysis_manager import add_scan_analysis
+from deeptracy_core.dal.plugin_manager import get_plugins_for_lang
+from deeptracy_core.dal.scan_manager import get_scan, update_scan_state, ScanState
+from deeptracy_core.dal.scan_analysis_manager import add_scan_analysis
+from deeptracy_core.dal.database import db
 from deeptracy.tasks.run_analyzer import run_analyzer
 from deeptracy.tasks.merge_results import merge_results
-from deeptracy.dal.database import db
 
 
 @task(name="start_scan")

@@ -1,15 +1,6 @@
 version: '3'
 
 services:
-  #deeptracy:
-  #  build: .
-  #  image: deeptracy
-  #  depends_on:
-  #    - redis
-  #    - postgres
-  #  environment:
-  #    - REDIS_URI=redis://redis:6379
-  #    - POSTGRES_URI=postgresql://postgres:postgres@postgres:5432/deeptracy
 
   postgres:
     image: postgres:9.6-alpine

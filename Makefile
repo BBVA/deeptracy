@@ -60,7 +60,7 @@ lint: ## check style with flake8
 
 .PHONY: coverage
 coverage: install ## check code coverage
-	coverage run --source=deeptracy -m unittest  discover -s tests/unit
+	coverage run --source=deeptracy -m unittest discover -s tests/unit
 	coverage report -m --fail-under 80
 	coverage xml -o coverage-reports/report.xml
 

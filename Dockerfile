@@ -23,7 +23,7 @@ RUN rm -rf /tmp/install
 RUN mkdir /opt/deeptracy
 WORKDIR /opt/deeptracy
 ADD wait-for-it.sh /opt/deeptracy
-ADD run_celery.sh /opt/deeptracy
-RUN chmod +x /opt/deeptracy/run_celery.sh
+ADD run.sh /opt/deeptracy
+RUN chmod +x /opt/deeptracy/run.sh
 
-CMD ["/opt/deeptracy/run_celery.sh"]
+CMD ["/opt/deeptracy/run.sh"]
