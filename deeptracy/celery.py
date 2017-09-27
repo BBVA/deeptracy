@@ -6,7 +6,6 @@ from celery import Celery
 from deeptracy.config import BROKER_URI
 from deeptracy_core.dal.database import db
 from deeptracy.plugins.store import plugin_store
-from deeptracy_core.dal.project import Project
 
 db.init_engine()  # Init database engine
 plugin_store.load_plugins()    # Load analyzer plugins
