@@ -5,7 +5,8 @@ services: docker
 python:
   - "3.6"
 
-install: pip install tox behave
+install:
+  - pip install -r requirements_test.txt
 
 script:
   - tox
