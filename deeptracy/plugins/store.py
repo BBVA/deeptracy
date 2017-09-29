@@ -1,7 +1,7 @@
 import os
 from typing import List, Union
 from pluginbase import PluginBase
-from deeptracy_core.dal.plugin_manager import deactivate_all_plugins, add_or_activate_plugin
+from deeptracy_core.dal.plugin.manager import deactivate_all_plugins, add_or_activate_plugin
 from deeptracy_core.dal.database import db
 
 
