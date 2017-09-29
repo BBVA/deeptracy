@@ -72,13 +72,9 @@ install:
 docs: ## generate and shows documentation
 	@make -C docs html
 
-.PHONY: run_celery
-run_celery: ## local run celery workers
-	./run_celery.sh
-
-.PHONY: run_api
-run_api: ## local run the API
-	./run_api.sh
+.PHONY: run
+run: ## local run the API
+	./run.sh
 
 .PHONY: demo
 demo: ## local run the app
