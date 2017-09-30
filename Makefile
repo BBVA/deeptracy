@@ -84,3 +84,7 @@ demo: ## local run the app
 behave: ## run behave tests
 	behave --no-capture --no-capture-stderr tests/acceptance/features
 
+.PHONY: local_behave
+local_behave: ## run behave tests
+	LOCAL_BEHAVE=True behave --no-capture --no-capture-stderr tests/acceptance/features
+

@@ -13,7 +13,7 @@ OUTPUT_FILE = 'retirejs_task.txt'
 
 
 @deeptracy_plugin("nodejs")
-def retirejs_task(source_code_location: str) -> List[Dict]:
+def retirejs(source_code_location: str) -> List[Dict]:
 
     output_path = os.path.join(source_code_location, OUTPUT_FILE)
     os.chdir(source_code_location)
