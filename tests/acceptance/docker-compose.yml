@@ -8,7 +8,7 @@ services:
       - redis
       - postgres
     environment:
-      - BROKER_URI=redis://redis:6379/1
+      - BROKER_URI=redis://redis:6379
       - DATABASE_URI=postgresql://postgres:postgres@postgres:5432/deeptracy_test
       - SCAN_PATH=/tmp/deeptracy_test
     volumes:
