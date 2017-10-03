@@ -21,12 +21,12 @@ def add_scan_vulnerabilities_results(scan_analysis_id: str, vulnerabilities: Lis
 
     for vul in vulnerabilities:
         scan_analysis_vul = ScanAnalysisVulnerability(
-                                scan_analysis_id=scan_analysis_id,
-                                library=vul.get('library'),
-                                version=vul.get('version'),
-                                severity=vul.get('severity'),
-                                summary=vul.get('summary'),
-                                advisory=vul.get('advisory'))
+            scan_analysis_id=scan_analysis_id,
+            library=vul.get('library'),
+            version=vul.get('version'),
+            severity=vul.get('severity'),
+            summary=vul.get('summary'),
+            advisory=vul.get('advisory'))
         session.add(scan_analysis_vul)
 
 
