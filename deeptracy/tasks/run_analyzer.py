@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from celery import task
+from typing import List
 from deeptracy.dal.database import db
 from deeptracy.plugins.store import plugin_store
 from deeptracy.dal.scan_analysis_manager import get_scan_analysis, add_scan_vulnerabilities_results
 
 
 @task(name="run_analyzer")
-def run_analyzer(scan_analysis_id: str):
+def run_analyzer(scan_analysis_id: str) -> List[str]:
     with db.session_scope() as session:
         scan_analysis = get_scan_analysis(scan_analysis_id, session)
 

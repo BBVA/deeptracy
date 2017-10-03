@@ -1,15 +1,22 @@
 # -*- coding: utf-8 -*-
+import shutil
+import docker
+import logging
+import tempfile
 
 from celery import task, chord
 
 import deeptracy.utils as utils
-from deeptracy.config import SCAN_PATH
+
+from deeptracy.config import SCAN_PATH, SHARED_VOLUME_PATH
 from deeptracy.dal.plugin_manager import get_plugins_for_lang
 from deeptracy.dal.scan_manager import get_scan, update_scan_state, ScanState
 from deeptracy.dal.scan_analysis_manager import add_scan_analysis
 from deeptracy.tasks.run_analyzer import run_analyzer
 from deeptracy.tasks.merge_results import merge_results
 from deeptracy.dal.database import db
+
+log = logging.getLogger("deeptracy")
 
 
 @task(name="start_scan")
@@ -48,9 +55,67 @@ def start_scan(scan_id: str):
             session.commit()  # Commit the session to persist the scan_analysis and get and id
             scan_analysis_ids.append(scan_analysis.id)
 
+        before_scan.delay(scan_analysis_ids)
+
         # make a celey chord to execute all analyzers in parallel and then run the callback
         # result merger task
-        callback = merge_results.s()
-        header = [run_analyzer.s(scan_analysis_id) for scan_analysis_id in scan_analysis_ids]
+        # callback = merge_results.s()
+        # header = [run_analyzer.s(scan_analysis_id) for scan_analysis_id in scan_analysis_ids]
         # launch the chord (they are async)
-        chord(header)(callback)
+        # chord(header)(callback)
+
+        # Before run scans with need to create the shared volume
+        clone_dir = tempfile.TemporaryDirectory(prefix="deeptracy",
+                                                dir=SHARED_VOLUME_PATH).name
+
+        # Poll of analyzer to launch
+        analyzers = [run_analyzer.s(scan_analysis_id)
+                     for scan_analysis_id in scan_analysis_ids]
+
+        # launch all jobs
+        chord(before_scan.s(project.repo, clone_dir),
+              analyzers,
+              after_scan.s(clone_dir),
+              merge_results.s())
+
+
+@task(name="pre_scan")
+def before_scan(repo: str,
+                clone_dir: str = "/tmp"):
+
+    docker_client = docker.from_env()
+
+    # Choice volumes
+    docker_volumes = {
+        clone_dir: {
+            'bind': "/cloned",
+            'mode': 'rw'
+        }
+    }
+
+    # Command to run
+    command = "git clone {repo} /cloned/".format(
+        repo=repo
+    )
+
+    # Clone the repo
+    docker_client.containers.run(
+        image="bravissimolabs/alpine-git",
+        command=command,
+        remove=True,
+        volumes=docker_volumes
+    )
+
+    return clone_dir
+
+
+@task(name="after_scan")
+def after_scan(clone_dir: str):
+    # Before call merger we remote the shared volume with source code
+    try:
+        shutil.rmtree(clone_dir)
+    except IOError as e:
+        log.error("Error while removing tmp dir: {} - {}".format(
+            clone_dir,
+            e
+        ))
