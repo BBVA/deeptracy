@@ -2,9 +2,9 @@
 
 from celery import task
 from typing import List
-from deeptracy.dal.database import db
 from deeptracy.plugin_store import plugin_store
-from deeptracy.dal.scan_analysis_manager import get_scan_analysis, add_scan_vulnerabilities_results
+from deeptracy_core.dal.database import db
+from deeptracy_core.dal.scan_analysis_manager import get_scan_analysis, add_scan_vulnerabilities_results
 
 
 @task(name="run_analyzer")

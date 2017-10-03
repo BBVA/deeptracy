@@ -3,9 +3,17 @@ Deeptracy
 
 Deeptracy scans your project dependencies to spot vulnerabilities.
 
+.. image:: https://readthedocs.org/projects/deeptracy/badge/?version=latest
+  :target: http://deeptracy.readthedocs.io/en/latest/?badge=latest
+  :alt: Documentation Status
+
+.. image:: https://travis-ci.org/BBVA/deeptracy.svg?branch=master
+  :target: https://travis-ci.org/BBVA/deeptracy
+  :alt: Build Status
+
 .. image::  https://raw.githubusercontent.com/BBVA/deeptracy/develop/docs/_static/deeptracy-logo-small.png
-    :alt: Deeptracy logo
-    :width: 250 px
+  :alt: Deeptracy logo
+  :width: 250 px
 
 
 +----------------+----------------------------------------------+

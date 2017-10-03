@@ -15,15 +15,16 @@ OUTPUT_FILE = 'retirejs_task.txt'
 
 
 @deeptracy_plugin("nodejs")
-def retirejs_task(source_code_location: str) -> List[Dict]:
+def retirejs(source_code_location: str) -> List[Dict]:
 
     output_path = os.path.join(source_code_location, OUTPUT_FILE)
     os.chdir(source_code_location)
     os.system('docker run -v $(pwd):/opt/app -e OUTPUT_FILE={} {}'
               .format(OUTPUT_FILE, DOCKER_IMAGE))
 
-    with run_in_docker('deeptracy/retirejs'):
-        f = open(output_path, "r").readlines()
+    f = open(output_path, "r").readlines()
+    # with run_in_docker('deeptracy/retirejs'):
+    #     f = open(output_path, "r").readlines()
 
     results = []
 
@@ -52,17 +53,17 @@ def retirejs_task(source_code_location: str) -> List[Dict]:
             if not summary:
                 summary = "Unknown"
 
-            # results.append(dict(library=library,
-            #                     version=version,
-            #                     severity=severity,
-            #                     summary=summary,
-            #                     advisory=''))
+            results.append(dict(library=library,
+                                version=version,
+                                severity=severity,
+                                summary=summary,
+                                advisory=''))
 
-            results.append(PluginResult(
-                library,
-                version,
-                PluginSeverityEnum.NONE,
-                summary=summary
-            ))
+            # results.append(PluginResult(
+            #     library,
+            #     version,
+            #     PluginSeverityEnum.NONE,
+            #     summary=summary
+            # ))
 
     return results

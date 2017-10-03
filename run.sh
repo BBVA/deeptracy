@@ -2,4 +2,4 @@
 
 echo "RUNING CELERY"
 
-celery -A deeptracy.app:celery worker -l INFO
+celery -A deeptracy.celery:celery worker -l INFO

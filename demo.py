@@ -3,6 +3,7 @@ import uuid
 from celery import Celery
 from celery.execute import send_task
 from deeptracy.dal.database import db
+from deeptracy.dal.project import Project
 from deeptracy.dal.models import Base
 
 db.init_engine()
@@ -29,5 +30,5 @@ celery = Celery('deeptracy',
                     'deeptracy.tasks.run_analyzer'
                 ])
 
-result = send_task("start_scan", [scab_id])
+result = celery.send_task("start_scan", [scab_id])
 # result.get()

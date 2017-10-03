@@ -60,7 +60,7 @@ lint: ## check style with flake8
 
 .PHONY: coverage
 coverage: install ## check code coverage
-	coverage run --source=deeptracy -m unittest  discover -s tests/unit
+	coverage run --source=deeptracy -m unittest discover -s tests/unit
 	coverage report -m --fail-under 80
 	coverage xml -o coverage-reports/report.xml
 
@@ -73,7 +73,7 @@ docs: ## generate and shows documentation
 	@make -C docs html
 
 .PHONY: run
-run: ## local run the app
+run: ## local run the API
 	./run.sh
 
 .PHONY: demo
@@ -82,4 +82,9 @@ demo: ## local run the app
 
 .PHONY: behave
 behave: ## run behave tests
-	behave tests/behave/features
+	behave --no-capture --no-capture-stderr tests/acceptance/features
+
+.PHONY: local_behave
+local_behave: ## run behave tests
+	LOCAL_BEHAVE=True behave --no-capture --no-capture-stderr tests/acceptance/features
+

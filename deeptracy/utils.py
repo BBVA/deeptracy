@@ -1,5 +1,7 @@
 import requests
 import os
+import uuid
+import docker
 
 
 def valid_repo(url: str):
@@ -42,5 +44,31 @@ def clone_repo(base_path: str, scan_id: str, repo_url: str) -> str:
     if not os.path.exists(scan_path):
         os.makedirs(scan_path)
 
-    os.system('git clone {} {}'.format(repo_url, scan_path))
+    docker_client = docker.from_env()
+
+    # Choice volumes
+    docker_volumes = {
+        scan_path: {
+            'bind': "/cloned",
+            'mode': 'rw'
+        }
+    }
+
+    # Command to run
+    command = "git clone {repo} /cloned/".format(
+        repo=repo_url
+    )
+
+    # Clone the repo
+    docker_client.containers.run(
+        image="bravissimolabs/alpine-git",
+        command=command,
+        remove=True,
+        volumes=docker_volumes
+    )
+
     return scan_path
+
+
+def make_uuid() -> str:
+    return uuid.uuid4().hex

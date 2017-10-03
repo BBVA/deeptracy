@@ -1,8 +1,8 @@
 import os
 from typing import List, Union
 from pluginbase import PluginBase
-from deeptracy.dal.plugin_manager import deactivate_all_plugins, add_or_activate_plugin
-from deeptracy.dal.database import db
+from deeptracy_core.dal.plugin.manager import deactivate_all_plugins, add_or_activate_plugin
+from deeptracy_core.dal.database import db
 
 
 class deeptracy_plugin(object):
@@ -24,20 +24,27 @@ class DeeptracyPluginStore:
     _plugins = {}
     _manager = None
 
-    def load_plugins(self, start_paths: List[str] = None):
+    def get_all_plugin_paths(self):
+        default_path = os.path.join(os.path.dirname(__file__), '..', 'plugins')
+        return [os.path.join(default_path, o) for o in os.listdir(default_path)
+                if os.path.isdir(os.path.join(default_path, o))]
+
+    def load_plugins(self):
         session = db.Session()
         deactivate_all_plugins(session)
         session.commit()
 
-        start_paths = start_paths or [os.path.dirname(__file__)]
+        default_paths = self.get_all_plugin_paths()
+
         # Load plugins from directories
         plugin_base = PluginBase(package="deeptracy.plugins")
-        plugin_manager = plugin_base.make_plugin_source(searchpath=start_paths)
+        plugin_manager = plugin_base.make_plugin_source(searchpath=default_paths)
 
         # Locate plugins
         plugins_found = {}
 
         for module in plugin_manager.list_plugins():
+
             if module == 'store':
                 continue
 

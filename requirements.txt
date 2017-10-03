@@ -1,9 +1,7 @@
 celery==4.1.0
 redis==2.10.6
-requests==2.18.4
-SQLAlchemy==1.1.14
-SQLAlchemy-Utils==0.32.16
 psycopg2==2.7.3.1
 pluginbase==0.5
 redis==2.10.6
-deeptracy-core
+deeptracy_core==0.0.8
+requests==2.18.4
