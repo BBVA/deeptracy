@@ -7,7 +7,7 @@ from celery import task, chord
 from deeptracy.config import SHARED_VOLUME_PATH
 from deeptracy_core.dal.plugin.manager import get_plugins_for_lang
 from deeptracy_core.dal.scan.manager import get_scan, update_scan_state, ScanState
-from deeptracy_core.dal.scan_analysis_manager import add_scan_analysis
+from deeptracy_core.dal.scan_analysis.manager import add_scan_analysis
 from deeptracy_core.dal.database import db
 from deeptracy.tasks.run_analyzer import run_analyzer
 from deeptracy.tasks.merge_results import merge_results
@@ -54,11 +54,6 @@ def start_scan(scan_id: str):
         # create a task for each analyzer to run
         analyzers = [run_analyzer.s(scan_analysis_id)
                      for scan_analysis_id in scan_analysis_ids]
-
-        print('-----------')
-        print(analyzers)
-        print('-----cloned_dir {} ------'.format(cloned_dir))
-        print('-----------')
 
         # launch all jobs
         chord(analyzers)(merge_results.s(cloned_dir=cloned_dir))

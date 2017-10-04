@@ -3,5 +3,5 @@ redis==2.10.6
 psycopg2==2.7.3.1
 pluginbase==0.5
 redis==2.10.6
-deeptracy_core==0.0.8
+deeptracy_core==0.0.10
 requests==2.18.4

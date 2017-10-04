@@ -53,17 +53,11 @@ def retirejs(source_code_location: str) -> List[Dict]:
             if not summary:
                 summary = "Unknown"
 
-            results.append(dict(library=library,
-                                version=version,
-                                severity=severity,
-                                summary=summary,
-                                advisory=''))
-
-            # results.append(PluginResult(
-            #     library,
-            #     version,
-            #     PluginSeverityEnum.NONE,
-            #     summary=summary
-            # ))
+            results.append(PluginResult(
+                library,
+                version,
+                PluginSeverityEnum.NONE,
+                summary=summary
+            ))
 
     return results
