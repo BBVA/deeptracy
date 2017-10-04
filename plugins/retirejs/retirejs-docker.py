@@ -21,6 +21,7 @@ def retirejs(source_code_location: str) -> List[Dict]:
         json_raw_results = json.loads(f, object_hook=lambda d: Namespace(**d))
 
     results = []
+
     for result in json_raw_results:
 
         # Load partial result
