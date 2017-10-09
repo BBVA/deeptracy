@@ -1,6 +1,7 @@
 import os
 from typing import List, Union
 from pluginbase import PluginBase
+import deeptracy.config as config
 from deeptracy_core.dal.plugin.manager import deactivate_all_plugins, add_or_activate_plugin
 from deeptracy_core.dal.database import db
 
@@ -25,7 +26,7 @@ class DeeptracyPluginStore:
     _manager = None
 
     def get_all_plugin_paths(self):
-        default_path = os.path.join(os.path.dirname(__file__), '..', 'plugins')
+        default_path = config.PLUGINS_LOCATION  # os.path.join(os.path.dirname(__file__), '..', 'plugins')
         return [os.path.join(default_path, o) for o in os.listdir(default_path)
                 if os.path.isdir(os.path.join(default_path, o))]
 

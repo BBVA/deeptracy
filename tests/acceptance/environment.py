@@ -13,7 +13,7 @@ def before_all(context):
         # set environment
         os.environ['DATABASE_URI'] = 'postgresql://postgres:postgres@127.0.0.1:5432/deeptracy_test'
         os.environ['BROKER_URI'] = 'redis://127.0.0.1:6379'
-        os.environ['SCAN_PATH'] = '/tmp/deeptracy'
+        os.environ['SHARED_VOLUME_PATH'] = '/tmp/deeptracy'
 
         os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
         os.system('docker-compose -f tests/acceptance/docker-compose.yml up -d --build')
@@ -34,7 +34,7 @@ def after_all(context):
     if os.environ.get('LOCAL_BEHAVE', None) is None:
         os.system('docker-compose -f tests/acceptance/docker-compose.yml kill')
         os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
-        os.system('rm -rf {}'.format(context.SCAN_PATH))
+        os.system('rm -rf {}'.format(context.SHARED_VOLUME_PATH))
 
 
 def _setup_redis(uri: dict) -> redis.StrictRedis:

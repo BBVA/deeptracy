@@ -22,9 +22,9 @@ def start_scan(scan_id: str):
 
         project = scan.project
 
-        if utils.valid_repo(project.repo) is False:
-            update_scan_state(scan, ScanState.INVALID_REPO, session)
-            return
+        # if utils.valid_repo(project.repo) is False:
+        #     update_scan_state(scan, ScanState.INVALID_REPO, session)
+        #     return
 
         available_plugins_for_lang = get_plugins_for_lang(scan.lang, session)
         analysis_count = len(available_plugins_for_lang)
@@ -34,7 +34,7 @@ def start_scan(scan_id: str):
             return
 
         # clone the repository in a shared volume
-        cloned_dir = utils.clone_repo(SHARED_VOLUME_PATH, scan_id, project.repo)
+        cloned_dir = utils.clone_project(SHARED_VOLUME_PATH, scan_id, project)
 
         # update the scan object
         scan.analysis_count = analysis_count
@@ -56,4 +56,4 @@ def start_scan(scan_id: str):
                      for scan_analysis_id in scan_analysis_ids]
 
         # launch all jobs
-        chord(analyzers)(merge_results.s(cloned_dir=cloned_dir))
+        chord(analyzers)(merge_results.s(scan_id=scan.id))

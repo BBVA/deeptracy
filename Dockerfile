@@ -24,6 +24,7 @@ RUN mkdir /opt/deeptracy
 WORKDIR /opt/deeptracy
 ADD wait-for-it.sh /opt/deeptracy
 ADD run.sh /opt/deeptracy
+ADD plugins /opt/deeptracy/plugins
 RUN chmod +x /opt/deeptracy/run.sh
 
 CMD ["/opt/deeptracy/run.sh"]

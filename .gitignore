@@ -140,3 +140,6 @@ ENV/
 /site
 
 # End of https://www.gitignore.io/api/python,pycharm
+
+# ignore private key used in local testing
+id_rsa

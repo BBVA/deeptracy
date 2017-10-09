@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import text
-from behave import then, when, given
+from behave import then, given
 
 
 @then(u'the results for the analysis in the database includes the results in the file')
@@ -58,3 +58,18 @@ def step_impl(context):
     results = context.engine.execute(sql, scan_id=context.scan_id).fetchall()
 
     assert len(results) > 0  # this scan has at least 1 vuln
+
+
+@given(u'a project with "{repo}" repo with {repo_auth_type} repo auth type exists in the database')
+def step_impl(context, repo, repo_auth_type):
+    project_id = '123'
+
+    sql = text('INSERT INTO project (id, repo, repo_auth_type) '
+               'VALUES (:id, :repo, :repo_auth_type)')
+
+    context.engine.execute(sql,
+                           id=project_id,
+                           repo=repo,
+                           repo_auth_type=repo_auth_type)
+
+    context.project_id = project_id
