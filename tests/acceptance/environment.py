@@ -18,7 +18,7 @@ def before_all(context):
         os.system('docker-compose -f tests/acceptance/docker-compose.yml stop')
         os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
         os.system('docker-compose -f tests/acceptance/docker-compose.yml up -d --build')
-        time.sleep(10)
+        time.sleep(20)
 
     context.BROKER_URI = os.environ['BROKER_URI']
     context.SHARED_VOLUME_PATH = os.environ['SHARED_VOLUME_PATH']
