@@ -15,6 +15,7 @@ def before_all(context):
         os.environ['BROKER_URI'] = 'redis://127.0.0.1:6379'
         os.environ['SHARED_VOLUME_PATH'] = '/tmp/deeptracy'
 
+        os.system('docker-compose -f tests/acceptance/docker-compose.yml stop')
         os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
         os.system('docker-compose -f tests/acceptance/docker-compose.yml up -d --build')
         time.sleep(10)
