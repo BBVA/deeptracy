@@ -81,10 +81,10 @@ demo: ## local run the app
 	python demo.py
 
 .PHONY: behave
-behave: ## run behave tests
-	behave --no-capture --no-capture-stderr tests/acceptance/features
+behave: ## run behave tests except those tagged as local
+	behave --no-capture --no-capture-stderr --tags=-local tests/acceptance/features
 
 .PHONY: local_behave
-local_behave: ## run behave tests
+local_behave: ## run behave tests, including those tagged as local
 	LOCAL_BEHAVE=True behave --no-capture --no-capture-stderr tests/acceptance/features
 

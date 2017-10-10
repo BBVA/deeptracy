@@ -52,8 +52,8 @@ def prepare_path_to_clone_with_local_key(scan_path: str, repo: str, mounted_vol:
     dest_key_path = os.path.join(scan_path, key_name)
     copyfile(config.LOCAL_PRIVATE_KEY_FILE, dest_key_path)
 
-    # Having the key in the mounted folder, activate the ssh-agent, disable the host key verification
-    # and add the key to it after doing the clone
+    # Having the key in the mounted folder, preapre a script to activate the ssh-agent, disable the host
+    # key verification and add the key to it after doing the clone
     script_contents = '#!/bin/bash \n' \
                       'eval `ssh-agent -s` \n' \
                       'chmod 400 {mounted_vol}/{key} \n' \
@@ -103,11 +103,14 @@ def clone_project(base_path: str, scan_id: str, project: Project) -> str:
     mounted_vol = '/opt/deeptracy'
 
     # Command to run
-    command = 'git clone {repo} /cloned/source/'.format(
-        repo=project.repo
+    command = 'git clone {repo} /{mounted_vol}/{source_folder}/'.format(
+        repo=project.repo,
+        mounted_vol=mounted_vol,
+        source_folder=source_folder
     )
 
     if project.repo_auth_type == RepoAuthType.LOCAL_PRIVATE_KEY.name:
+        # if the project is auth with LOCAL_PRIVATE_KEY prepare the path and get the new command to clone
         command = prepare_path_to_clone_with_local_key(scan_path, project.repo, mounted_vol, source_folder)
 
     docker_client = docker.from_env()
@@ -120,7 +123,7 @@ def clone_project(base_path: str, scan_id: str, project: Project) -> str:
         }
     }
 
-    # launche the container with a command that will clone the repo
+    # launch the container with a command that will clone the repo
     docker_client.containers.run(
         image='bravissimolabs/alpine-git',
         command=command,

@@ -13,8 +13,8 @@ Feature: RetireJS Plugin
     And all celery tasks are done
     Then the scan folder is deleted
     And 1 scan analysis is generated in the database
-    And the results for the analysis in the database includes the results in the file
-    # And the results for the scan in the database includes the results in the file
+    And the results for the analysis in the database exists
+    # And the results for the scan in the database exists
 
 
 

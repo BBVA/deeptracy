@@ -4,7 +4,7 @@ from sqlalchemy import text
 from behave import then, given
 
 
-@then(u'the results for the analysis in the database includes the results in the file')
+@then(u'the results for the analysis in the database exists')
 def step_impl(context):
     sql = text('SELECT * FROM scan_analysis_vulnerability WHERE scan_analysis_id = :scan_analysis_id')
     results = context.engine.execute(sql, scan_analysis_id=context.scan_analysis_id).fetchall()
@@ -52,7 +52,7 @@ def step_impl(context, created):
     context.scan_analysis_id = analysis[0]  # id
 
 
-@then(u'the results for the scan in the database includes the results in the file')
+@then(u'the results for the scan in the database exists')
 def step_impl(context):
     sql = text('SELECT * FROM scan_vulnerability WHERE scan_id = :scan_id')
     results = context.engine.execute(sql, scan_id=context.scan_id).fetchall()
