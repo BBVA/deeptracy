@@ -10,7 +10,7 @@ from deeptracy_core.docker_helpers import run_in_docker
 from deeptracy_core import PluginResult, PluginSeverityEnum
 
 REGEX_SEVERITY = r'''(severity[\s]*:[\s]*)([\w]+)(;)'''
-DOCKER_IMAGE = 'bbvalabs/deeptracy-retirejs'
+DOCKER_IMAGE = 'bbvalabs/deeptracy-retirejs:1.0.0'
 OUTPUT_FILE = 'retirejs_task.txt'
 
 
