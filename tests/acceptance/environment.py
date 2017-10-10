@@ -32,10 +32,9 @@ def before_all(context):
 
 def after_all(context):
     if os.environ.get('LOCAL_BEHAVE', None) is None:
-        # os.system('docker-compose -f tests/acceptance/docker-compose.yml kill')
-        # os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
-        # os.system('rm -rf {}'.format(context.SHARED_VOLUME_PATH))
-        pass
+        os.system('docker-compose -f tests/acceptance/docker-compose.yml kill')
+        os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
+        os.system('rm -rf {}'.format(context.SHARED_VOLUME_PATH))
 
 
 def _setup_redis(uri: dict) -> redis.StrictRedis:
