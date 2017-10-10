@@ -5,7 +5,7 @@ from deeptracy_core.dal.database import db
 
 
 def clean_db(context):
-    db.init_engine()
+    db.init_engine(db_uri=os.environ['DATABASE_URI'])
     clean_directory(context.SHARED_VOLUME_PATH)
 
     sql = text('DELETE FROM scan_analysis_vulnerability')

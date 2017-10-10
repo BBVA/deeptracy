@@ -103,7 +103,7 @@ def clone_project(base_path: str, scan_id: str, project: Project) -> str:
     mounted_vol = '/opt/deeptracy'
 
     # Command to run
-    command = 'git clone {repo} /{mounted_vol}/{source_folder}/'.format(
+    command = 'git clone {repo} {mounted_vol}/{source_folder}/'.format(
         repo=project.repo,
         mounted_vol=mounted_vol,
         source_folder=source_folder
