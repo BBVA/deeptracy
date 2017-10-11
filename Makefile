@@ -46,6 +46,7 @@ clean-test: ## remove test and coverage artifacts
 .PHONY: test
 test: install ## run tests quickly with the default Python
 	python -m unittest discover -s tests/unit
+	python -m pytest
 
 .PHONY: test-all
 test-all: ## run tests on every Python version with tox
@@ -61,6 +62,7 @@ lint: ## check style with flake8
 .PHONY: coverage
 coverage: install ## check code coverage
 	coverage run --source=deeptracy -m unittest discover -s tests/unit
+	py.test --cov-report annotate --cov-append  --cov=deeptracy tests/ plugins/retirejs
 	coverage report -m --fail-under 80
 	coverage xml -o coverage-reports/report.xml
 
