@@ -32,7 +32,7 @@ def before_all(context):
         os.system('docker-compose -f tests/acceptance/docker-compose.yml stop')
         os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
         os.system('docker-compose -f tests/acceptance/docker-compose.yml up -d --build')
-        time.sleep(20)
+        time.sleep(10)
 
     context.BROKER_URI = os.environ['BROKER_URI']
     context.SHARED_VOLUME_PATH = os.environ['SHARED_VOLUME_PATH']
@@ -47,10 +47,11 @@ def before_all(context):
 
 def after_all(context):
     if os.environ.get('LOCAL_BEHAVE', None) is None:
-        os.system('docker-compose -f tests/acceptance/docker-compose.yml logs ')
-        os.system('docker-compose -f tests/acceptance/docker-compose.yml kill')
-        os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
-        os.system('rm -rf {}'.format(context.SHARED_VOLUME_PATH))
+        # os.system('docker-compose -f tests/acceptance/docker-compose.yml logs ')
+        # os.system('docker-compose -f tests/acceptance/docker-compose.yml kill')
+        # os.system('docker-compose -f tests/acceptance/docker-compose.yml rm -f')
+        # os.system('rm -rf {}'.format(context.SHARED_VOLUME_PATH))
+        pass
 
 
 def _setup_redis(uri: dict) -> redis.StrictRedis:

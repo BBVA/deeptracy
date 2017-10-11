@@ -28,7 +28,7 @@ def step_impl(context):
     waiting = 0
     while True:
         active = i.active()
-        # print('active ----- {}'.format(active))
+        print('active ----- {}'.format(active))
         if waiting > max_wait:
             raise TimeoutError('celery task wait timeout')
         elif active is None:
