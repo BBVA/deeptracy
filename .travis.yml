@@ -15,6 +15,6 @@ deploy:
 
     # Deploy container to DockerHub
   - provider: script
-    script: deploy/upload_plugins_images.sh
+    script: upload_plugins_images.sh
     on:
       branch: master
