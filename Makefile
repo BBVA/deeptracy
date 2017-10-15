@@ -42,6 +42,7 @@ clean-pyc: ## remove Python file artifacts
 .PHONY: clean-test
 clean-test: ## remove test and coverage artifacts
 	rm -rf .tox .coverage htmlcov coverage-reports
+	find . -name '*,cover' -exec rm -fr {} +
 
 .PHONY: test
 test: install ## run tests quickly with the default Python
