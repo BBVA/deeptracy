@@ -18,6 +18,12 @@ import logging
 from celery import task
 
 from deeptracy.config import SHARED_VOLUME_PATH
+from deeptracy_core.dal.database import db
+from deeptracy_core.dal.scan.manager import get_scan
+from deeptracy_core.dal.project.manager import get_project
+from deeptracy_core.dal.project.project_hooks import ProjectHookType
+from deeptracy.tasks.notify_results import notify_results
+
 
 log = logging.getLogger("deeptracy")
 
@@ -39,3 +45,11 @@ def merge_results(results, scan_id=None):
             scan_dir,
             e
         ))
+
+    with db.session_scope() as session:
+        scan = get_scan(scan_id, session)
+        project = scan.project
+
+        if project.hook_type != ProjectHookType.NONE.name:
+            # launch notify task
+            notify_results.delay(scan_id)
