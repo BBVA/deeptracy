@@ -13,7 +13,7 @@
 # limitations under the License.
 import logging
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 root_log = logging.getLogger()
 root_log.setLevel(logging.DEBUG)
