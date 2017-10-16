@@ -11,10 +11,16 @@ install:
 script:
   - tox
 
-deploy:
+release:
 
-    # Deploy container to DockerHub
+  # release plugins images to DockerHub
   - provider: script
-    script: upload_plugins_images.sh
+    script: release/plugins_images_dockerhub.sh
+    on:
+      branch: master
+
+  # release image to DockerHub
+  - provider: script
+    script: release/image_dockerhub.sh
     on:
       branch: master

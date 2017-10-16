@@ -1,4 +1,4 @@
-## Deploy to DockerHub
+## Deploy plugin images to DockerHub
 for d in $(find $(pwd)/plugins -maxdepth 2)
 do
   # Build docker image
