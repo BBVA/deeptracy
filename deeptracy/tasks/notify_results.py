@@ -12,43 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import shutil
 import logging
+import json
 from celery import task
 
-from deeptracy.config import SHARED_VOLUME_PATH
 from deeptracy_core.dal.database import db
 from deeptracy_core.dal.scan.manager import get_scan
 from deeptracy_core.dal.project.project_hooks import ProjectHookType
-from deeptracy.tasks.notify_results import notify_results
+import deeptracy.notifications.slack_webhook_post as slack
+
+log = logging.getLogger(__name__)
 
 
-log = logging.getLogger("deeptracy")
-
-
-@task(name="merge_results")
-def merge_results(results, scan_id=None):
-    for result in results:
-        print('----- {} ------'.format(result))
-
-    # with db.session_scope() as session:
-    #     scan = get_scan(scan_id, session)
-
-    # After the merge we remove the folder with the scan source
-    scan_dir = os.path.join(SHARED_VOLUME_PATH, scan_id)
-    try:
-        shutil.rmtree(scan_dir)
-    except IOError as e:
-        log.error("Error while removing tmp dir: {} - {}".format(
-            scan_dir,
-            e
-        ))
-
+@task(name="notify_results")
+def notify_results(scan_id):
     with db.session_scope() as session:
         scan = get_scan(scan_id, session)
         project = scan.project
 
-        if project.hook_type != ProjectHookType.NONE.name:
-            # launch notify task
-            notify_results.delay(scan_id)
+        log.debug('notify project data {}'.format(project.hook_data))
+
+        notif_text = 'project at {} has vulnerabilities'.format(project.repo)
+
+        if project.hook_type == ProjectHookType.SLACK.name:
+            hook_data_dict = json.loads(project.hook_data)
+            slack.notify(hook_data_dict.get('webhook_url'), notif_text)
