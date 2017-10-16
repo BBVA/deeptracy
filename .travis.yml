@@ -11,7 +11,7 @@ install:
 script:
   - tox
 
-release:
+deploy:
 
   # release plugins images to DockerHub
   - provider: script
