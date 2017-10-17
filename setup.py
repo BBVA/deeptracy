@@ -28,7 +28,7 @@ test_requirements = [str(ir.req) for ir in parse_requirements('requirements_test
 
 setup(
     name='deeptracy',
-    version='0.0.3',
+    version='0.0.4',
     author='BBVA',
     description=readme,
     long_description=readme,
