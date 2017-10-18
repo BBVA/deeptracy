@@ -141,5 +141,6 @@ ENV/
 
 # End of https://www.gitignore.io/api/python,pycharm
 
-# ignore private key used in local testing
+# ignore private key used in local testing and keys to deploy
 id_rsa
+*.pem
