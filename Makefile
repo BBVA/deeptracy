@@ -85,7 +85,13 @@ demo: ## local run the app
 
 .PHONY: behave
 behave: ## run behave tests except those tagged as local
-	behave --no-capture --no-capture-stderr --tags=-local tests/acceptance/features
+	docker-compose -f tests/acceptance/docker-compose.yml stop
+	docker-compose -f tests/acceptance/docker-compose.yml rm -f
+	docker-compose -f tests/acceptance/docker-compose.yml up -d --build
+	sleep 10
+	behave --no-capture --no-capture-stderr tests/acceptance/features
+	docker-compose -f tests/acceptance/docker-compose.yml kill
+	docker-compose -f tests/acceptance/docker-compose.yml rm -f
 
 .PHONY: local_behave
 local_behave: ## run behave tests, including those tagged as local
