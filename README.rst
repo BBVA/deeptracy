@@ -6,22 +6,34 @@
   :target: https://travis-ci.org/BBVA/deeptracy
   :alt: Build Status
 
+.. |docker_deeptracy| image:: https://img.shields.io/docker/automated/bbvalabs/deeptracy.svg
+  :target: https://hub.docker.com/r/bbvalabs/deeptracy/
+  :alt: Dockerhub Build
+
 .. |travis_deeptracy_api| image:: https://travis-ci.org/BBVA/deeptracy-api.svg?branch=master
   :target: https://travis-ci.org/BBVA/deeptracy-api
   :alt: API Build Status
+
+.. |docker_deeptracy_api| image:: https://img.shields.io/docker/automated/bbvalabs/deeptracy-api.svg
+  :target: https://hub.docker.com/r/bbvalabs/deeptracy-api/
+  :alt: Dockerhub Build
 
 .. |travis_deeptracy_core| image:: https://travis-ci.org/BBVA/deeptracy-core.svg?branch=master
   :target: https://travis-ci.org/BBVA/deeptracy-core
   :alt: Core Build Status
 
+.. |pypi_deeptracy_core| image:: https://img.shields.io/pypi/v/deeptracy-core.svg
+  :target: https://pypi.python.org/pypi/deeptracy-core
+  :alt: PyPI package
 
-+------------+-------------------------+--------------------+
-| Deeptracy  | |docs_deeptracy|        | |travis_deeptracy| |
-+------------+-------------------------+--------------------+
-| API        | |travis_deeptracy_api|  |                    |
-+------------+-------------------------+--------------------+
-| CORE       | |travis_deeptracy_core| |                    |
-+------------+-------------------------+--------------------+
+
++------------+-------------------------+-----------------------+-----------------------+
+| Deeptracy  | |docs_deeptracy|        | |travis_deeptracy|    | |docker_deeptracy|    |
++------------+-------------------------+-----------------------+-----------------------+
+| API        | |travis_deeptracy_api|  | |docker_deeptracy_api||                       |
++------------+-------------------------+-----------------------+-----------------------+
+| CORE       | |travis_deeptracy_core| | |pypi_deeptracy_core| |                       |
++------------+-------------------------+-----------------------+-----------------------+
 
 Deeptracy
 =========
