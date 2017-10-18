@@ -7,7 +7,7 @@ python:
 
 install:
   - pip install tox
-  - pip install behave
+  - pip install -r requirements_test.txt
 
 env:
   global:

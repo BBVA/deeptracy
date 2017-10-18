@@ -84,7 +84,7 @@ demo: ## local run the app
 	python demo.py
 
 .PHONY: behave
-behave: ## run behave tests except those tagged as local
+behave: ## run acceptance tests in complete docker environment
 	docker-compose -f tests/acceptance/docker-compose.yml stop
 	docker-compose -f tests/acceptance/docker-compose.yml rm -f
 	docker-compose -f tests/acceptance/docker-compose.yml up -d --build
@@ -94,6 +94,6 @@ behave: ## run behave tests except those tagged as local
 	docker-compose -f tests/acceptance/docker-compose.yml rm -f
 
 .PHONY: local_behave
-local_behave: ## run behave tests, including those tagged as local
+local_behave: ## run behave tests without environemnt. You need to start your own environment (for dev)
 	LOCAL_BEHAVE=True behave --no-capture --no-capture-stderr tests/acceptance/features
 
