@@ -1,23 +1,44 @@
-Deeptracy
-=========
-
-Deeptracy scans your project dependencies to spot vulnerabilities.
-
-.. image:: https://readthedocs.org/projects/deeptracy/badge/?version=latest
+.. |docs_deeptracy| image:: https://readthedocs.org/projects/deeptracy/badge/?version=latest
   :target: http://deeptracy.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
-.. image:: https://travis-ci.org/BBVA/deeptracy.svg?branch=master
+.. |travis_deeptracy| image:: https://travis-ci.org/BBVA/deeptracy.svg?branch=master
   :target: https://travis-ci.org/BBVA/deeptracy
   :alt: Build Status
 
-.. image::  https://raw.githubusercontent.com/BBVA/deeptracy/develop/docs/_static/deeptracy-logo-small.png
+.. |travis_deeptracy_api| image:: https://travis-ci.org/BBVA/deeptracy-api.svg?branch=master
+  :target: https://travis-ci.org/BBVA/deeptracy-api
+  :alt: API Build Status
+
+.. |travis_deeptracy_core| image:: https://travis-ci.org/BBVA/deeptracy-core.svg?branch=master
+  :target: https://travis-ci.org/BBVA/deeptracy-core
+  :alt: Core Build Status
+
+
++------------+-------------------------+--------------------+
+| Deeptracy  | |docs_deeptracy|        | |travis_deeptracy| |
++------------+-------------------------+--------------------+
+| API        | |travis_deeptracy_api|  |                    |
++------------+-------------------------+--------------------+
+| CORE       | |travis_deeptracy_core| |                    |
++------------+-------------------------+--------------------+
+
+Deeptracy
+=========
+
+Deeptracy scans your project dependencies to spot vulnerabilities
+
+
+.. |travis_deeptracy| image::  https://raw.githubusercontent.com/BBVA/deeptracy/develop/docs/_static/deeptracy-logo-small.png
   :alt: Deeptracy logo
   :width: 250 px
 
 
 +----------------+----------------------------------------------+
 |Project site    | https://github.com/bbva/deeptracy            |
++----------------+----------------------------------------------+
+|Project sides   | https://github.com/bbva/deeptracy-api        |
+|                | https://github.com/bbva/deeptracy-core       |
 +----------------+----------------------------------------------+
 |Issues          | https://github.com/bbva/deeptracy/issues/    |
 +----------------+----------------------------------------------+
