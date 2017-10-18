@@ -1,6 +1,6 @@
 # This feature is ONLY FOR LOCAL TESTING purposes as you need a LOCAL_PRIVATE_KEY in `test/acceptance/private_key/id_rsa`
 
-Feature: Clone authenticated project repositories
+Feature: Scan authenticated project repositories
   Deeptracy can clone repositories in projects
 
   Background: Database setup

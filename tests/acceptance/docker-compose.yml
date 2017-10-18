@@ -9,8 +9,8 @@ services:
       - postgres
     environment:
       - BROKER_URI=redis://redis:6379
-      - DATABASE_URI=postgresql://postgres:postgres@postgres:5433/deeptracy_test
-      - SHARED_VOLUME_PATH=/tmp/deeptracy_test
+      - DATABASE_URI=postgresql://postgres:postgres@postgres:5433/deeptracy
+      - SHARED_VOLUME_PATH=/tmp/deeptracy
       - LOCAL_PRIVATE_KEY_FILE=/root/.ssh/id_rsa
       - PLUGINS_LOCATION=/opt/deeptracy/plugins
     volumes:
