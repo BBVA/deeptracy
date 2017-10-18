@@ -79,10 +79,6 @@ docs: ## generate and shows documentation
 run: ## local run the API
 	./run.sh
 
-.PHONY: demo
-demo: ## local run the app
-	python demo.py
-
 .PHONY: behave
 behave: ## run acceptance tests in complete docker environment
 	docker-compose -f tests/acceptance/docker-compose.yml stop
