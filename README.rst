@@ -6,7 +6,7 @@
   :target: https://travis-ci.org/BBVA/deeptracy
   :alt: Build Status
 
-.. |docker_deeptracy| image:: https://dockerbuildbadges.quelltext.eu/status.svg?organization=bbvalabs&repository=deeptracy
+.. |docker_deeptracy| image:: https://img.shields.io/docker/automated/bbvalabs/deeptracy.svg
   :target: https://hub.docker.com/r/bbvalabs/deeptracy/
   :alt: Dockerhub Build
 
@@ -14,7 +14,7 @@
   :target: https://travis-ci.org/BBVA/deeptracy-api
   :alt: API Build Status
 
-.. |docker_deeptracy_api| image:: https://dockerbuildbadges.quelltext.eu/status.svg?organization=bbvalabs&repository=deeptracy-api
+.. |docker_deeptracy_api| image:: https://img.shields.io/docker/automated/bbvalabs/deeptracy-api.svg
   :target: https://hub.docker.com/r/bbvalabs/deeptracy-api/
   :alt: Dockerhub Build
 
