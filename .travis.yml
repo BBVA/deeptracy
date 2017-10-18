@@ -8,8 +8,20 @@ python:
 install:
   - pip install tox
 
+env:
+  - BROKER_URI: redis://127.0.0.1:6379
+  - DATABASE_URI: postgresql://postgres:postgres@127.0.0.1:5433/deeptracy
+  - SHARED_VOLUME_PATH: /tmp/deeptracy
+  - PLUGINS_LOCATION: plugins
+
 script:
   - tox
+  - docker-compose --version
+  - docker-compose -f tests/acceptance/docker-compose.yml up -d --build
+  - sleep 10
+  - behave --no-capture --no-capture-stderr tests/acceptance/features
+  - docker-compose -f tests/acceptance/docker-compose.yml kill
+  - docker-compose -f tests/acceptance/docker-compose.yml rm -f
 
 deploy:
 
