@@ -9,10 +9,11 @@ install:
   - pip install tox
 
 env:
-  - BROKER_URI: redis://127.0.0.1:6379
-  - DATABASE_URI: postgresql://postgres:postgres@127.0.0.1:5433/deeptracy
-  - SHARED_VOLUME_PATH: /tmp/deeptracy
-  - PLUGINS_LOCATION: plugins
+  global:
+    - BROKER_URI=redis://127.0.0.1:6379
+    - DATABASE_URI=postgresql://postgres:postgres@127.0.0.1:5433/deeptracy
+    - SHARED_VOLUME_PATH=/tmp/deeptracy
+    - PLUGINS_LOCATION=plugins
 
 script:
   - tox
