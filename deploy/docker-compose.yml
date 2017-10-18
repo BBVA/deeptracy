@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  deeptracy:
+    image: bbvalabs/deeptracy
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - BROKER_URI=redis://redis:6379
+      - DATABASE_URI=postgresql://postgres:postgres@postgres:5432/deeptracy
+      - SHARED_VOLUME_PATH=/tmp/deeptracy
+      - LOCAL_PRIVATE_KEY_FILE=/tmp/id_rsa
+      - PLUGINS_LOCATION=/opt/deeptracy/plugins
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+    privileged: true
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "/opt/deeptracy/run.sh"]
+
+  deeptracy-api:
+    image: bbvalabs/deeptracy-api
+    depends_on:
+      - redis
+      - postgres
+    ports:
+      - 80:8080
+    environment:
+      - BROKER_URI=redis://redis:6379
+      - DATABASE_URI=postgresql://postgres:postgres@postgres:5432/deeptracy
+      - SERVER_ADDRESS=0.0.0.0:8080
+      - GUNICORN_WORKERS=1
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "/opt/deeptracy/run.sh"]
+
+  postgres:
+    image: postgres:9.6-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    command: -p 5432
+
+  redis:
+    image: redis:3-alpine
+    ports:
+      - 6379:6379
+
