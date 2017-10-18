@@ -7,6 +7,7 @@ python:
 
 install:
   - pip install tox
+  - pip install behave
 
 env:
   global:
