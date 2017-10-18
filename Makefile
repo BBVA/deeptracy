@@ -76,7 +76,7 @@ docs: ## generate and shows documentation
 	@make -C docs html
 
 .PHONY: run
-run: ## local run the API
+run: ## launch the application
 	./run.sh
 
 .PHONY: behave
