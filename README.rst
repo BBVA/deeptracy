@@ -28,7 +28,7 @@
 
 
 +------------+-------------------------+-----------------------+-----------------------+
-| Deeptracy  | |docs_deeptracy|        | |travis_deeptracy|    | |docker_deeptracy|    |
+| Deeptracy  | |travis_deeptracy|      | |docker_deeptracy|    | |docs_deeptracy|      |
 +------------+-------------------------+-----------------------+-----------------------+
 | API        | |travis_deeptracy_api|  | |docker_deeptracy_api||                       |
 +------------+-------------------------+-----------------------+-----------------------+
