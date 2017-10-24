@@ -16,6 +16,25 @@ from sqlalchemy import text
 from behave import then, given
 
 
+@then(u'the scan analysis_done is equals analysis_count')
+def step_impl(context):
+    sql = text('SELECT * FROM scan WHERE id = :scan_id')
+    results = context.engine.execute(sql, scan_id=context.scan_id).fetchall()
+
+    assert len(results) == 1  # this scan has 1 fetch
+    assert results[0]['analysis_done'] == results[0]['analysis_count']
+    assert results[0]['analysis_done'] > 0
+
+
+@then(u'the scan state is {state}')
+def step_impl(context, state):
+    sql = text('SELECT * FROM scan WHERE id = :scan_id')
+    results = context.engine.execute(sql, scan_id=context.scan_id).fetchall()
+
+    assert len(results) == 1  # this scan has 1 fetch
+    assert results[0]['state'] == state
+
+
 @then(u'the results for the analysis in the database exists')
 def step_impl(context):
     sql = text('SELECT * FROM scan_analysis_vulnerability WHERE scan_analysis_id = :scan_analysis_id')
