@@ -22,7 +22,7 @@ from deeptracy_core.dal.database import db
 from deeptracy_core.dal.scan.manager import get_scan
 from deeptracy_core.dal.project.project_hooks import ProjectHookType
 from deeptracy.tasks.notify_results import notify_results
-
+from deeptracy_core.dal.scan.manager import ScanState
 
 log = logging.getLogger("deeptracy")
 
@@ -48,6 +48,9 @@ def merge_results(results, scan_id=None):
     with db.session_scope() as session:
         scan = get_scan(scan_id, session)
         project = scan.project
+
+        scan.state = ScanState.DONE.name
+        session.add(scan)
 
         if project.hook_type != ProjectHookType.NONE.name:
             # launch notify task
