@@ -14,7 +14,6 @@ Feature: RetireJS Plugin
     Then the scan folder is deleted
     And 1 scan analysis is generated in the database
     And the results for the analysis in the database exists
+    And the scan analysis_done is equals analysis_count
+    And the scan state is DONE
     # And the results for the scan in the database exists
-
-
-
