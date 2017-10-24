@@ -30,7 +30,7 @@ log = logging.getLogger("deeptracy")
 @task(name="merge_results")
 def merge_results(results, scan_id=None):
     for result in results:
-        print('----- {} ------'.format(result))
+        log.info('----- {} ------'.format(result))
 
     # with db.session_scope() as session:
     #     scan = get_scan(scan_id, session)
