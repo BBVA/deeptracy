@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import json
+import logging
 
 from types import SimpleNamespace as Namespace
 from typing import List, Dict
@@ -21,6 +22,7 @@ from deeptracy_core import PluginResult, PluginSeverityEnum
 from deeptracy_core.decorator import deeptracy_plugin
 from deeptracy_core.docker_helpers import run_in_docker, get_plugin_image
 
+log = logging.getLogger(__name__)
 
 @deeptracy_plugin('nodejs')
 def retirejs(source_code_location: str) -> List[Dict]:
@@ -89,4 +91,4 @@ def retirejs(source_code_location: str) -> List[Dict]:
 
 if __name__ == '__main__':
     import os.path as op
-    print(retirejs(op.abspath(op.join(op.dirname(__file__), '..', '..', 'vulnerable-node'))))
+    log.info(retirejs(op.abspath(op.join(op.dirname(__file__), '..', '..', 'vulnerable-node'))))

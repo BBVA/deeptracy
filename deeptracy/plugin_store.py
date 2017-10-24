@@ -13,12 +13,14 @@
 # limitations under the License.
 
 import os
+import logging
 from typing import List, Union
 from pluginbase import PluginBase
 import deeptracy.config as config
 from deeptracy_core.dal.plugin.manager import deactivate_all_plugins, add_or_activate_plugin
 from deeptracy_core.dal.database import db
 
+log = logging.getLogger(__name__)
 
 class deeptracy_plugin(object):
     def __init__(self, lang: Union[str, List[str]]):
@@ -82,8 +84,8 @@ class DeeptracyPluginStore:
 
         session.close()
 
-        print('[Plugins]')
-        print(plugins_found)
+        log.info('[Plugins]')
+        log.info(plugins_found)
 
         self._plugins = plugins_found
         self._manager = plugin_manager

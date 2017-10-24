@@ -13,8 +13,10 @@
 # limitations under the License.
 
 import time
+import logging
 from behave import when
 
+log = logging.getLogger(__name__)
 
 @when(u'a task for "{task}" is added to celery for the scan')
 def step_impl(context, task):
@@ -28,7 +30,7 @@ def step_impl(context):
     waiting = 0
     while True:
         active = i.active()
-        print('active ----- {}'.format(active))
+        log.info('active ----- {}'.format(active))
         if waiting > max_wait:
             raise TimeoutError('celery task wait timeout')
         elif active is None:
