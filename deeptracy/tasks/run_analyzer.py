@@ -31,5 +31,10 @@ def run_analyzer(scan_analysis_id: str) -> List[str]:
         results = plugin(scan.source_path)
         add_scan_vulnerabilities_results(scan_analysis_id, results, session)
 
+        # TODO: this should be a function that calls the celery state instead of cherrypicking a counter that can lose
+        # integrity if something wrong happen
+        scan.analysis_done += 1
+        session.add(scan)
+
         serialized_results = [result.to_dict() for result in results]
         return serialized_results
