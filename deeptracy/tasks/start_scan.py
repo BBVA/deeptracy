@@ -38,7 +38,7 @@ def start_scan(scan_id: str):
         analysis_count = len(available_plugins_for_lang)
 
         if analysis_count < 1:
-            update_scan_state(scan, ScanState.NO_PLUGINS_FOR_LANGUAJE, session)
+            update_scan_state(scan, ScanState.NO_PLUGINS_FOR_LANGUAGE, session)
             return
 
         # clone the repository in a shared volume
