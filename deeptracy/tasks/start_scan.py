@@ -34,10 +34,6 @@ def start_scan(scan_id: str):
 
         project = scan.project
 
-        # if utils.valid_repo(project.repo) is False:
-        #     update_scan_state(scan, ScanState.INVALID_REPO, session)
-        #     return
-
         available_plugins_for_lang = get_plugins_for_lang(scan.lang, session)
         analysis_count = len(available_plugins_for_lang)
 

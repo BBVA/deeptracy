@@ -137,6 +137,10 @@ def clone_project(base_path: str, scan_id: str, project: Project) -> str:
         }
     }
 
+    # if utils.valid_repo(project.repo) is False:
+    #     update_scan_state(scan, ScanState.INVALID_REPO, session)
+    #     return
+
     # launch the container with a command that will clone the repo
     docker_client.containers.run(
         image='bravissimolabs/alpine-git',
