@@ -22,6 +22,7 @@ from deeptracy_core.dal.database import db
 
 log = logging.getLogger(__name__)
 
+
 class deeptracy_plugin(object):
     def __init__(self, lang: Union[str, List[str]]):
         if not hasattr(lang, "append"):
