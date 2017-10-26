@@ -24,13 +24,14 @@ from deeptracy_core.dal.project.project_hooks import ProjectHookType
 from deeptracy.tasks.notify_results import notify_results
 from deeptracy_core.dal.scan.manager import ScanState
 
-log = logging.getLogger("deeptracy")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 @task(name="merge_results")
 def merge_results(results, scan_id=None):
     for result in results:
-        log.info('----- {} ------'.format(result))
+        logger.info('{} merge results'.format(result))
 
     # with db.session_scope() as session:
     #     scan = get_scan(scan_id, session)
@@ -40,7 +41,7 @@ def merge_results(results, scan_id=None):
     try:
         shutil.rmtree(scan_dir)
     except IOError as e:
-        log.error("Error while removing tmp dir: {} - {}".format(
+        logger.error("Error while removing tmp dir: {} - {}".format(
             scan_dir,
             e
         ))
@@ -54,4 +55,4 @@ def merge_results(results, scan_id=None):
 
         if project.hook_type != ProjectHookType.NONE.name:
             # launch notify task
-            notify_results.delay(scan_id)
+            logger.info('{} launch notify task for project.hook_type'.format(scan.id))
