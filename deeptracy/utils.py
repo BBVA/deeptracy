@@ -14,12 +14,18 @@
 
 import requests
 import os
+import yaml
 import uuid
 import docker
+import logging
+
 from shutil import copyfile
 
 import deeptracy.config as config
-from deeptracy_core.dal.project.model import Project, RepoAuthType
+from deeptracy_core.dal.project.model import RepoAuthType
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def valid_repo(url: str):
@@ -93,7 +99,7 @@ def prepare_path_to_clone_with_local_key(scan_path: str, repo: str, mounted_vol:
     return command
 
 
-def clone_project(base_path: str, scan_id: str, project: Project) -> str:
+def clone_project(base_path: str, scan_id: str, repo_url: str, repo_auth_type: str) -> str:
     """
     Clone a project repository.
 
@@ -104,7 +110,9 @@ def clone_project(base_path: str, scan_id: str, project: Project) -> str:
 
     :param base_path: (str) Base path to clone. Should be an absolute path
     :param scan_id: (str) Scan id that triggers the clone. Its going to be created as a folder inside the base_path
-    :param project: (Project) project object with repo and auth type is not public
+    :param repo_url: (str) project repository url to make the git clone
+    :param repo_auth_type: (str) if the repo needs any kind of auth
+
 
     :return: returns the sources path where the repo is cloned
     """
@@ -116,16 +124,18 @@ def clone_project(base_path: str, scan_id: str, project: Project) -> str:
 
     mounted_vol = '/opt/deeptracy'
 
-    # Command to run
+    # Command to run for public repos
     command = 'git clone {repo} {mounted_vol}/{source_folder}/'.format(
-        repo=project.repo,
+        repo=repo_url,
         mounted_vol=mounted_vol,
         source_folder=source_folder
     )
 
-    if project.repo_auth_type == RepoAuthType.LOCAL_PRIVATE_KEY.name:
+    if repo_auth_type == RepoAuthType.LOCAL_PRIVATE_KEY.name:
         # if the project is auth with LOCAL_PRIVATE_KEY prepare the path and get the new command to clone
-        command = prepare_path_to_clone_with_local_key(scan_path, project.repo, mounted_vol, source_folder)
+        command = prepare_path_to_clone_with_local_key(scan_path, repo_url, mounted_vol, source_folder)
+
+    logger.debug('clone repo with command {}'.format(command))
 
     docker_client = docker.from_env()
 
@@ -149,7 +159,35 @@ def clone_project(base_path: str, scan_id: str, project: Project) -> str:
         volumes=docker_volumes
     )
 
+    logger.debug('repo {} cloned'.format(repo_url))
+
     return scan_path_sources
+
+
+def parse_deeptracy_yml(source_dir: str):
+    """
+    Find a .deeptracy.yml file inside source_dir and try to parse it.
+
+    If the file is not found, return None
+
+    :param source_dir:
+    :return: None is the file is not found or cant be parsed, else it returns a dict with the key/values
+    """
+    logger.debug('try parse .deeptracy.yml at {}'.format(source_dir))
+    yml_file = os.path.join(source_dir, '.deeptracy.yml')
+    if os.path.isfile(yml_file):
+        logger.info('.deeptracy.yml FOUND in {}'.format(source_dir))
+
+        with open(yml_file, 'r') as contents:
+            parsed = yaml.load(contents)
+
+        assert type(parsed) is dict  # should be parsed as a dict
+        assert 'lang' in parsed  # should have a lang attr
+        assert type(parsed.get('lang')) is str  # TODO: assert against a valid lang ENUM
+
+        return parsed
+
+    return None
 
 
 def make_uuid() -> str:
