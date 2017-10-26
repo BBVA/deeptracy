@@ -36,31 +36,27 @@ clean: ## remove all build, test, coverage and Python artifacts
 	find . -name '*,cover' -exec rm -fr {} +
 
 .PHONY: test
-test: install ## run tests quickly with the default Python
-	python -m unittest discover -s tests/unit
-	python -m pytest
+test: ## run tests quickly with py.test
+	py.test tests
 
 .PHONY: test-all
-test-all: ## run tests on every Python version with tox
+test-all: ## run tests on every python version with tox
 	tox
 
 install-%:
 	pip install -r $*.txt -U
+
+.PHONY: install
+install:
+	pip install -U .
 
 .PHONY: lint
 lint: ## check style with flake8
 	flake8 deeptracy
 
 .PHONY: coverage
-coverage: install ## check code coverage
-	coverage run --source=deeptracy -m unittest discover -s tests/unit
-	py.test --cov-report annotate --cov-append  --cov=deeptracy tests/ plugins/retirejs
-	coverage report -m --fail-under 80
-	coverage xml -o coverage-reports/report.xml
-
-.PHONY: install
-install:
-	pip install -U .
+coverage: ## check code coverage
+	py.test --cov=deeptracy tests --cov-fail-under 10
 
 .PHONY: docs
 docs: ## generate and shows documentation
@@ -70,8 +66,16 @@ docs: ## generate and shows documentation
 run: ## launch the application
 	./run.sh
 
-.PHONY: behave
-behave: ## run acceptance tests in complete docker environment
+.PHONY: at_local
+at_local: ## run acceptance tests without environemnt. You need to start your own environment (for dev)
+	LOCAL_BEHAVE=True behave --no-capture --no-capture-stderr tests/acceptance/features
+
+.PHONY: at_only
+at_only: ## run acceptance tests without environemnt, and just features marked as @only (for dev)
+	behave --no-capture --no-capture-stderr --tags=only tests/acceptance/features
+
+.PHONY: at
+at: ## run acceptance tests in complete docker environment
 	docker-compose -f tests/acceptance/docker-compose.yml stop
 	docker-compose -f tests/acceptance/docker-compose.yml rm -f
 	docker-compose -f tests/acceptance/docker-compose.yml up -d --build
@@ -79,8 +83,3 @@ behave: ## run acceptance tests in complete docker environment
 	behave --no-capture --no-capture-stderr tests/acceptance/features
 	docker-compose -f tests/acceptance/docker-compose.yml kill
 	docker-compose -f tests/acceptance/docker-compose.yml rm -f
-
-.PHONY: local_behave
-local_behave: ## run behave tests without environemnt. You need to start your own environment (for dev)
-	LOCAL_BEHAVE=True behave --no-capture --no-capture-stderr tests/acceptance/features
-
