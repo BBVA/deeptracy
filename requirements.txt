@@ -6,3 +6,4 @@ redis==2.10.6
 deeptracy_core==0.0.22
 requests==2.18.4
 docker==2.5.1
+PyYAML==3.12
