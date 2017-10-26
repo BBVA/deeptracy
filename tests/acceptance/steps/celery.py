@@ -26,7 +26,7 @@ def step_impl(context, task):
 @when(u'all celery tasks are done')
 def step_impl(context):
     i = context.celery.control.inspect()
-    max_wait = 120
+    max_wait = 240
     waiting = 0
     while True:
         active = i.active()

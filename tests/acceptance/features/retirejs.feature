@@ -1,4 +1,4 @@
-
+@only
 Feature: RetireJS Plugin
   RetireJS Plugin should work as expected
 
