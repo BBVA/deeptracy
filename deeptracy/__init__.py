@@ -11,10 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import logging
+
+from .config import LOG_LEVEL
 
 __version__ = '0.0.5'
 
-root_log = logging.getLogger()
-root_log.setLevel(logging.DEBUG)
-root_log.addHandler(logging.StreamHandler())
+
+logger = logging.getLogger('deeptracy')
+logger.setLevel(LOG_LEVEL)
+logger.addHandler(logging.StreamHandler())
