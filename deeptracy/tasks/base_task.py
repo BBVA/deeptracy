@@ -2,14 +2,12 @@
 import logging
 from celery import Task
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger('deeptracy')
 
 
 class DeeptracyTask(Task):
     """Default class for all task in deeptracy. It has error handling for logging all celery failures in tasks"""
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        logger.info('-----ON FAILURE-----')
         logger.exception('celery task failure', exc_info=exc)
         super().on_failure(exc, task_id, args, kwargs, einfo)
 
