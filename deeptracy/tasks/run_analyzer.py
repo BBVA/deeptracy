@@ -12,11 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from celery import task
 from typing import List
+
+from celery import task
+from celery.utils.log import get_task_logger
+
 from deeptracy.plugin_store import plugin_store
 from deeptracy_core.dal.database import db
 from deeptracy_core.dal.scan_analysis.manager import get_scan_analysis, add_scan_vulnerabilities_results
+
+
+logger = get_task_logger('deeptracy')
 
 
 @task(name="run_analyzer")
@@ -24,10 +30,13 @@ def run_analyzer(scan_analysis_id: str) -> List[str]:
     with db.session_scope() as session:
         scan_analysis = get_scan_analysis(scan_analysis_id, session)
 
+        logger.debug('{} run analyzer'.format(scan_analysis.id))
+
         scan = scan_analysis.scan
 
         # a plugin is a function
         plugin = plugin_store.get_plugin(scan_analysis.plugin_id)
+        logger.debug('{} run analyzer for plugin {}'.format(scan_analysis.id, scan_analysis.plugin_id))
         results = plugin(scan.source_path)
         add_scan_vulnerabilities_results(scan_analysis_id, results, session)
 

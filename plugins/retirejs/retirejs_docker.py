@@ -22,10 +22,12 @@ from deeptracy_core import PluginResult, PluginSeverityEnum
 from deeptracy_core.decorator import deeptracy_plugin
 from deeptracy_core.docker_helpers import run_in_docker, get_plugin_image
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('deeptracy')
+
 
 @deeptracy_plugin('nodejs')
 def retirejs(source_code_location: str) -> List[Dict]:
+    log.debug('start plugin retirejs')
 
     current_plugin_path = get_plugin_image()
 
@@ -33,13 +35,14 @@ def retirejs(source_code_location: str) -> List[Dict]:
         # raw_results = f.splitlines()
         json_raw_results = json.loads(f, object_hook=lambda d: Namespace(**d))
 
+    log.debug('plugin retirejd end running, parse results')
     results = []
 
     for result in json_raw_results:
 
         # Load partial result
         for v_info in result.results:
-
+            log.debug('parse raw result {}'.format(v_info))
             v_info_library = v_info.component
             v_info_version = v_info.version
 
