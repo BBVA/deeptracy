@@ -16,7 +16,7 @@ import logging
 
 from .config import LOG_LEVEL
 
-__version__ = '0.0.5'
+__version__ = '0.0.6'
 
 
 logger = logging.getLogger('deeptracy')
