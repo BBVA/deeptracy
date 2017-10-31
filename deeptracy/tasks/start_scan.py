@@ -15,10 +15,10 @@
 import os
 import yaml
 import docker
-import logging
 
 from shutil import copyfile
 from celery import task, chord
+from celery.utils.log import get_task_logger
 
 from deeptracy_core.dal.project.model import RepoAuthType
 from deeptracy_core.dal.plugin.manager import get_plugins_for_lang
@@ -32,8 +32,7 @@ from .merge_results import merge_results
 from .base_task import TaskException, DeeptracyTask
 
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger = get_task_logger('deeptracy')
 
 
 @task(name="start_scan", base=DeeptracyTask)
@@ -118,6 +117,7 @@ def prepare_path_to_clone_with_local_key(scan_path: str, repo: str, mounted_vol:
     :param source_folder: (str) name of the folder to made the actual clone
     :return: returns the command to pass to the container that makes the clone
     """
+    logger.debug('prepare repo for clone with local private key')
     key_name = 'local_id_rsa'
     dest_key_path = os.path.join(scan_path, key_name)
     copyfile(config.LOCAL_PRIVATE_KEY_FILE, dest_key_path)

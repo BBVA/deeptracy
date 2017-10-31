@@ -20,7 +20,7 @@ import deeptracy.config as config
 from deeptracy_core.dal.plugin.manager import deactivate_all_plugins, add_or_activate_plugin
 from deeptracy_core.dal.database import db
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('deeptracy')
 
 
 class deeptracy_plugin(object):

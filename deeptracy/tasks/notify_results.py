@@ -21,7 +21,7 @@ from deeptracy_core.dal.scan.manager import get_scan
 from deeptracy_core.dal.project.project_hooks import ProjectHookType
 import deeptracy.notifications.slack_webhook_post as slack
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger('deeptracy')
 
 
 @task(name="notify_results")
@@ -30,7 +30,7 @@ def notify_results(scan_id):
         scan = get_scan(scan_id, session)
         project = scan.project
 
-        log.debug('notify project data {}'.format(project.hook_data))
+        logger.debug('notify project data {}'.format(project.hook_data))
 
         notif_text = 'project at {} has vulnerabilities'.format(project.repo)
 

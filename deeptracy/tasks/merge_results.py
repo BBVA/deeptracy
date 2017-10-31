@@ -24,8 +24,7 @@ from deeptracy_core.dal.project.project_hooks import ProjectHookType
 from deeptracy.tasks.notify_results import notify_results
 from deeptracy_core.dal.scan.manager import ScanState, update_scan_state
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger('deeptracy')
 
 
 @task(name="merge_results")
@@ -55,5 +54,5 @@ def merge_results(results, scan_id=None):
 
         if project.hook_type != ProjectHookType.NONE.name:
             # launch notify task
-            logger.info('{} launch notify task for project.hook_type'.format(scan.id))
+            logger.debug('{} launch notify task for project.hook_type'.format(scan.id))
             notify_results.delay(scan.id)
