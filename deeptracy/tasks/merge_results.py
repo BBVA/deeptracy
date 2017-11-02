@@ -17,12 +17,13 @@ import shutil
 import logging
 from celery import task
 
-from deeptracy.config import SHARED_VOLUME_PATH
 from deeptracy_core.dal.database import db
 from deeptracy_core.dal.scan.manager import get_scan
 from deeptracy_core.dal.project.project_hooks import ProjectHookType
-from deeptracy.tasks.notify_results import notify_results
 from deeptracy_core.dal.scan.manager import ScanState, update_scan_state
+
+from ..config import SHARED_VOLUME_PATH
+from .notify_results import notify_results
 
 logger = logging.getLogger('deeptracy')
 
