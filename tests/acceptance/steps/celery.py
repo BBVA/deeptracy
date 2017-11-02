@@ -18,6 +18,7 @@ from behave import when
 
 log = logging.getLogger(__name__)
 
+
 @when(u'a task for "{task}" is added to celery for the scan')
 def step_impl(context, task):
     context.celery.send_task(task, [context.scan_id])

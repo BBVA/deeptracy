@@ -26,6 +26,9 @@ def step_impl(context):
     db.init_engine(db_uri=os.environ['DATABASE_URI'])
     clean_directory(context.SHARED_VOLUME_PATH)
 
+    sql = text('DELETE FROM scan_deps')
+    context.engine.execute(sql)
+
     sql = text('DELETE FROM scan_analysis_vulnerability')
     context.engine.execute(sql)
 
@@ -49,4 +52,4 @@ def clean_directory(folder: str):
                 os.unlink(file_path)
             elif os.path.isdir(file_path): shutil.rmtree(file_path)
         except Exception as e:
-            log.info(e)
+            print(e)

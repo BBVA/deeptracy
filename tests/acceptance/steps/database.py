@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import uuid
+
+from datetime import datetime
 from sqlalchemy import text
 from behave import then, given
 
@@ -59,7 +62,7 @@ def step_impl(context, plugin_name, lang):
 
 @given(u'a project with "{repo}" repo exists in the database')
 def step_impl(context, repo):
-    project_id = '123'
+    project_id = uuid.uuid4()
     sql = text('INSERT INTO project (id, repo) VALUES (:id, :repo)')
     context.engine.execute(sql, id=project_id, repo=repo)
     context.project_id = project_id
@@ -68,8 +71,8 @@ def step_impl(context, repo):
 @given(u'a scan for lang "{lang}" exists for the project')
 def step_impl(context, lang):
     scan_id = '123'
-    sql = text('INSERT INTO scan (id, project_id, lang) VALUES (:id, :project_id, :lang)')
-    context.engine.execute(sql, id=scan_id, project_id=context.project_id, lang=lang)
+    sql = text('INSERT INTO scan (id, project_id, lang, created) VALUES (:id, :project_id, :lang, :created)')
+    context.engine.execute(sql, id=scan_id, project_id=context.project_id, lang=lang, created=datetime.now())
     context.scan_id = scan_id
 
 
