@@ -30,6 +30,8 @@ celery = Celery('deeptracy',
                 broker=BROKER_URI,
                 backend=BROKER_URI,
                 include=[
+                    'deeptracy.tasks.prepare_scan',
+                    'deeptracy.tasks.scan_deps',
                     'deeptracy.tasks.start_scan',
                     'deeptracy.tasks.run_analyzer',
                     'deeptracy.tasks.merge_results',
