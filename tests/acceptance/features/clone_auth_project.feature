@@ -11,7 +11,7 @@ Feature: Scan authenticated project repositories
 
   @local
   Scenario: The plugin generates valid output
-    When a task for "start_scan" is added to celery for the scan
+    When a task for "prepare_scan" is added to celery for the scan
     And all celery tasks are done
     Then the scan folder is deleted
     And 1 scan analysis is generated in the database
