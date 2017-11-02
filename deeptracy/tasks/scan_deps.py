@@ -16,7 +16,6 @@ import os
 from datetime import datetime
 
 import docker
-from docker.errors import DockerException
 
 from celery import task
 from celery.utils.log import get_task_logger
@@ -79,7 +78,7 @@ def get_dependencies(lang: str, sources: str):
         return get_dependencies_for_nodejs(sources, mounted_vol, docker_volumes)
 
 
-def get_dependencies_for_nodejs(sources :str, mounted_vol: str, docker_volumes: dict):
+def get_dependencies_for_nodejs(sources: str, mounted_vol: str, docker_volumes: dict):
     image = 'node:latest'
     script_contents = '#!/bin/bash \n' \
                       'mkdir /tmp/deeptracy \n' \
