@@ -11,7 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+Deeptracy Workers Package.
 
+This package contains celery workers and tasks to process the deeptracy flow for scanning projects.
+"""
 import logging
 
 from .config import LOG_LEVEL
