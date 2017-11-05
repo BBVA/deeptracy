@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Deeptracy Workers Package.
+Deeptracy Workers Project.
 
 This package contains celery workers and tasks to process the deeptracy flow for scanning projects.
 """
+
 import logging
 
 from .config import LOG_LEVEL
