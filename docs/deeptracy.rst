@@ -6,17 +6,16 @@ Subpackages
 
 .. toctree::
 
-    deeptracy.dal
-    deeptracy.plugins
+    deeptracy.notifications
     deeptracy.tasks
 
 Submodules
 ----------
 
-deeptracy\.app module
----------------------
+deeptracy\.celery module
+------------------------
 
-.. automodule:: deeptracy.app
+.. automodule:: deeptracy.celery
     :members:
     :undoc-members:
     :show-inheritance:
@@ -29,18 +28,10 @@ deeptracy\.config module
     :undoc-members:
     :show-inheritance:
 
-deeptracy\.redis module
------------------------
+deeptracy\.plugin\_store module
+-------------------------------
 
-.. automodule:: deeptracy.redis
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-deeptracy\.utils module
------------------------
-
-.. automodule:: deeptracy.utils
+.. automodule:: deeptracy.plugin_store
     :members:
     :undoc-members:
     :show-inheritance:

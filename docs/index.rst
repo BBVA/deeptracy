@@ -1,20 +1,17 @@
-.. deeptracy worker documentation master file.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+:orphan:
 
+Welcome to Deeptracy
+====================
 
-Overview
-========
+.. image::  https://raw.githubusercontent.com/BBVA/deeptracy/develop/docs/_static/deeptracy-logo-small.png
+   :alt: Deeptracy: spot vulnerabilities in your dependencies
+   :width: 250 px
 
-.. toctree::
-   :maxdepth: 2
+Welcome to Deeptracy's documentation. This documentation is divided into two different parts.
+One is the :ref:`userdocs-ref` which include installation and usage, and the other is the
+:ref:`developer-ref` which include :ref:`sourcecode-ref` documentation, local environment, testing
+and so on.
 
-   overview/index
-
-Source Code
-===========
-
-.. toctree::
-   :maxdepth: 3
-
-   modules
+.. include:: user.rst
+.. include:: developer.rst
+.. include:: modules.rst
