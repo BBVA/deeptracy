@@ -58,3 +58,57 @@ will see the changes in the core from the other projects as soon as they are mad
 
 Once the new feature is covered and tested with unit tests, you can launch a :ref:`local-environment-ref` and run
 the acceptance tests in the local environment with ``make at_local``
+
+Deeptracy Worker
+----------------
+
+Deeptracy worker has the celery tasks and worker to process them. The actual task flow is as follows::
+
+                                                      >- Run analyzer ->
+    Prepare Scan -> Scan Dependencies -> Start Scan ->>- Run analyzer ->-> Merge Results -> Notify
+                                                      >- Run analyzer ->
+
+Prepare Scan
+~~~~~~~~~~~~
+
+This task is the first task in the chain to scan projects. It is responsible of two things:
+
+* Clone the repository
+* Ensure the scan has a language stored. If it is not present in the database, try to extract it from 
+  the ``.deeptracy.yml`` if it is present in the repository
+
+Scan Dependencies
+~~~~~~~~~~~~~~~~~
+
+After running the actual scan, this task extracts all the dependencies for the project and store them in to the
+database. The dependency list is compared with the last previous scan to check for differences. If no differences
+are found in the dependency graph, the scan is aborted.
+
+Start Scan
+~~~~~~~~~~
+
+This task check the language of the scan and launches a task for each plugin available for that language. For
+each plugin, this task will create a scan analysis in the database and launch the task that will perform the 
+actual scan for that plugin.
+
+The task for the analysis are launched in parallel.
+
+Run Analyzer
+~~~~~~~~~~~~
+
+This task is the responsible to do the actual vulnerability scan in the source code. It will invoke the corresponding
+plugin and then return a serialized return with each vulnerability found.
+
+Merge Results
+~~~~~~~~~~~~~
+
+After all the analysis have being made, all results are sent to this task to merge the results to avoid dupplicated
+results, and store the final vulnerability list in to the database.
+
+If the project has a notification hook, this task spawn the final task to notify the project about the scan.
+
+Notify Results
+~~~~~~~~~~~~~~
+
+This task sends a notification to the project about the finished scan and the vulnerabilties that has being found.
+
