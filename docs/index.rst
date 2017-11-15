@@ -4,10 +4,13 @@
    :alt: Deeptracy: spot vulnerabilities in your dependencies
    :width: 250 px
 
+.. attention::
+    This documentation is a work in progress. We are currently in development phase and changing things in a daily basis.
+
 What is Deeptracy?
 ==================
 
-Deeptracy is a tool that can scan project to find vulnerabilities in its dependencies. It works by accessing the source
+Deeptracy is a tool that can scan projects to find vulnerabilities in its dependencies. It works by accessing the source
 code of repositories and extracting the dependencies list to match them against the
 `NIST NVD Data Feeds <https://nvd.nist.gov/vuln/data-feeds>`_
 
@@ -16,7 +19,7 @@ Deeptracy perks:
 * Deployed as docker containers
 * Scalable
 * Usable inside deployment pipelines
-* Multi-language (Scan projects in Python, GoLang, Ruby, JS and more)
+* Multi-language (Scan projects in Python, Java, Javascript and more)
 * Reactive (we monitor new vulnerabilities and warn you if any affects your dependencies)
 * Open Source :D
 
