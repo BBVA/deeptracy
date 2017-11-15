@@ -34,7 +34,7 @@ them without docker.
 
 .. note::
     Note that if you want to run the containers by hand (no docker-compose) you need to create a custom network yourself.
-    You can use docker-compose to run all deeptracy components at once (see :ref:`environment-up-ref`
+    You can use docker-compose to run all deeptracy components at once (see :ref:`environment-up-ref`)
 
 ::
 
