@@ -120,8 +120,8 @@ and more.
 
 .. _patton-ref:
 
-Path Patton
------------
+Patton
+------
 
 Path Patton is the responsible of matching dependencies with vulnerabilities. It has its own database (you can use a
 namespace in a shared postgresql database) and it has an auto-sync mechanism with the vulnerabilities database.
@@ -132,7 +132,7 @@ namespace in a shared postgresql database) and it has an auto-sync mechanism wit
 		   -e DATABASE_URI=postgresql://postgres:postgres@postgres:5432/patton \
 		   -p 8001:8001 \
 		   --network=deeptracy \
-		   bbvalabs/path-patton:latest
+		   bbvalabs/patton:latest
 
 .. _environment-up-ref:
 
@@ -182,8 +182,8 @@ This is an example of a complete Docker Compose file that launch a complete work
           - LOG_LEVEL=DEBUG
         command: ["./wait-for-it.sh", "postgres:5432", "--", "/opt/deeptracy/run.sh"]
 
-      path-patton:
-        image: bbvalabs/path-patton
+      patton:
+        image: bbvalabs/patton
         depends_on:
           - redis
           - postgres
