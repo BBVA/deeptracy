@@ -4,3 +4,4 @@ tox==2.3.1
 pytest==2.9.2
 coverage==4.4.1
 behave==1.2.5
+pytest-cov==2.5.1
