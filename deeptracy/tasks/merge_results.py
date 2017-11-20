@@ -49,6 +49,8 @@ def merge_results(results, scan_id=None):
     with db.session_scope() as session:
         scan = get_scan(scan_id, session)
         project = scan.project
+        
+        # TODO: implement merge_results
 
         scan = update_scan_state(scan, ScanState.DONE, session)
         session.commit()
