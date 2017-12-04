@@ -49,10 +49,12 @@ def merge_results(results, scan_id=None):
     with db.session_scope() as session:
         scan = get_scan(scan_id, session)
         project = scan.project
-        
+
         # TODO: implement merge_results
+        vulnerabilities = []
 
         scan = update_scan_state(scan, ScanState.DONE, session)
+        scan.total_vulnerabilities = len(vulnerabilities)
         session.commit()
 
         if project.hook_type != ProjectHookType.NONE.name:

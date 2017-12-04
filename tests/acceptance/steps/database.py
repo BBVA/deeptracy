@@ -63,16 +63,17 @@ def step_impl(context, plugin_name, lang):
 @given(u'a project with "{repo}" repo exists in the database')
 def step_impl(context, repo):
     project_id = uuid.uuid4()
-    sql = text('INSERT INTO project (id, repo) VALUES (:id, :repo)')
-    context.engine.execute(sql, id=project_id, repo=repo)
+    sql = text('INSERT INTO project (id, name, repo) VALUES (:id, :name, :repo)')
+    context.engine.execute(sql, id=project_id, name='test', repo=repo)
     context.project_id = project_id
 
 
 @given(u'a scan for lang "{lang}" exists for the project')
 def step_impl(context, lang):
     scan_id = '123'
-    sql = text('INSERT INTO scan (id, project_id, lang, created) VALUES (:id, :project_id, :lang, :created)')
-    context.engine.execute(sql, id=scan_id, project_id=context.project_id, lang=lang, created=datetime.now())
+    sql = text('INSERT INTO scan (id, project_id, lang, branch, created) '
+               'VALUES (:id, :project_id, :lang, :branch, :created)')
+    context.engine.execute(sql, id=scan_id, project_id=context.project_id, lang=lang, branch='master', created=datetime.now())
     context.scan_id = scan_id
 
 
@@ -98,11 +99,12 @@ def step_impl(context):
 def step_impl(context, repo, repo_auth_type):
     project_id = '123'
 
-    sql = text('INSERT INTO project (id, repo, repo_auth_type) '
-               'VALUES (:id, :repo, :repo_auth_type)')
+    sql = text('INSERT INTO project (id, name, repo, repo_auth_type) '
+               'VALUES (:id, :name, :repo, :repo_auth_type)')
 
     context.engine.execute(sql,
                            id=project_id,
+                           name='test',
                            repo=repo,
                            repo_auth_type=repo_auth_type)
 
