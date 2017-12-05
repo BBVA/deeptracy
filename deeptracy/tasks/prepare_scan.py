@@ -80,7 +80,8 @@ def prepare_scan(scan_id: str):
     scan_deps.delay(scan_id)
 
 
-def prepare_path_to_list_branches_with_local_key(scan_path: str, repo: str, mounted_vol: str, mounted_path_branches: str):
+def prepare_path_to_list_branches_with_local_key(scan_path: str, repo: str, mounted_vol: str,
+                                                 mounted_path_branches: str):
     """
     Prepare a folder to list a repository branches which needs a local private key.
 
@@ -111,10 +112,8 @@ def prepare_path_to_list_branches_with_local_key(scan_path: str, repo: str, moun
                       'touch /root/.ssh/config \n' \
                       'echo -e "StrictHostKeyChecking no" >> /root/.ssh/config \n' \
                       'ssh-add {mounted_vol}/{key} \n' \
-                      'git  ls-remote --heads {repo} '.format(
-                                                key=key_name,
-                                                repo=repo,
-                                                mounted_vol=mounted_vol)
+                      'git  ls-remote --heads {repo} '.format(key=key_name, repo=repo, mounted_vol=mounted_vol)
+
     script_contents = script_contents + '| awk \'{n=split($2,a,"/"); print a[n]}\' ' \
         + '>> {mounted_path_branches}\n'.format(mounted_path_branches=mounted_path_branches)
     return script_contents
