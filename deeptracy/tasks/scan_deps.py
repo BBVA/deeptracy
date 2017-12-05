@@ -40,6 +40,7 @@ def scan_deps(scan_id: str):
 
         # save all dependencies in the database
         add_scan_deps(scan.id, dependencies, datetime.now(), session)
+        scan.total_packages = len(dependencies)
         session.commit()
         logger.debug('saved {} dependencies'.format(len(dependencies)))
 

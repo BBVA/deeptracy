@@ -8,8 +8,6 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - 5433:5433
-    environment:
-      - POSTGRES_PASSWORD=postgres
     command: -p 5433
 
   redis:
