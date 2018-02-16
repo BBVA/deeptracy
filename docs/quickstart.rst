@@ -36,7 +36,7 @@ Download Docker Compose file from `this link <https://github.com/BBVA/deeptracy/
           - 6379:6379
 
       deeptracy:
-        build: ./
+        image: bbvalabs/deeptracy
         depends_on:
           - redis
           - postgres
