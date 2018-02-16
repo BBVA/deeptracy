@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Deeptracy</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+      <div class="jumbotron">
+        <div class="text-center">
+             <img src="https://raw.githubusercontent.com/BBVA/deeptracy/develop/docs/_static/deeptracy-logo-small.png" alt="">
+        </div>
+        <h1 class="display-3 text-center">Tu proyecto {{project_name}}</h1>
+        <h2 class="text-center"> Tiene {{dependencies_number}} nuevas vulnerabilidades</h2>
+        <hr>
+        <h5 class="text-center">Las dependencias que contienen vulnerabilidades son los siguientes:</h5>
+        <table class="table">
+          <thead class="thead-inverse">
+            <tr>
+              <th class="text-center">Dependencia</th>
+              <th class="text-center">Version</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for dependency in dependencies %}
+            <tr class="text-center">
+              <td>{{dependency[0]}}</td>
+              <td>{{dependency[1]}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+</body>
+</html>

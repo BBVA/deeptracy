@@ -1,0 +1,42 @@
+language: python
+
+services: docker
+
+python:
+  - "3.6"
+
+install:
+  - pip install tox
+  - pip install -r requirements_test.txt
+
+env:
+  global:
+    - BROKER_URI=redis://127.0.0.1:6379
+    - DATABASE_URI=postgresql://postgres:postgres@127.0.0.1:5433/deeptracy
+    - SHARED_VOLUME_PATH=/tmp/deeptracy
+    - PATTON_URI=http://127.0.0.1:8000
+    - POSTGRES_URI=postgresql://postgres:postgres@postgres:5433
+
+script:
+  - pip install -r requirements_test.txt
+  - tox
+  - docker-compose --version
+  - docker-compose -f tests/acceptance/docker-compose.yml up -d --build
+  - sleep 10
+  - behave --tags=-local tests/acceptance/features
+  - docker-compose -f tests/acceptance/docker-compose.yml kill
+  - docker-compose -f tests/acceptance/docker-compose.yml rm -f
+
+deploy:
+
+  # release plugins images to DockerHub
+  - provider: script
+    script: release/plugins_images_dockerhub.sh
+    on:
+      branch: master
+
+  # release image to DockerHub
+  - provider: script
+    script: release/image_dockerhub.sh
+    on:
+      branch: master

@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  deeptracy:
+    build: ../../
+    image: deeptracy
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - BROKER_URI=redis://redis:6379
+      - DATABASE_URI=postgresql://postgres:postgres@postgres:5433/deeptracy
+      - POSTGRES_URI=postgresql://postgres:postgres@postgres:5433
+      - SHARED_VOLUME_PATH=/tmp/deeptracy
+      - LOCAL_PRIVATE_KEY_FILE=/root/.ssh/id_rsa
+      - PATTON_URI=http://localhost:8000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+      - ./private_key:/root/.ssh/
+    privileged: true
+    command: ["./init_patton_db.sh"]
+
+  postgres:
+    image: postgres:9.6-alpine
+    ports:
+      - 5433:5433
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    command: -p 5433
+
+  redis:
+    image: redis:3-alpine
+    ports:
+      - 6379:6379
