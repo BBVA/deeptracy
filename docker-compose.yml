@@ -16,7 +16,7 @@ services:
       - 6379:6379
 
   deeptracy:
-    build: ./
+    image: bbvalabs/deeptracy
     depends_on:
       - redis
       - postgres
