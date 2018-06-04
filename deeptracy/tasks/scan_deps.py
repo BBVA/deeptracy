@@ -233,7 +233,7 @@ def get_dependencies_for_python(sources: str, mounted_vol: str, docker_volumes: 
     if "python.txt" in listdir(sources):
         file = open(join(sources, "python.txt"), 'r')
         for line in file.readlines():
-            parts = line.split(" ")
+            parts = line.split()
             name_package = parts[0]
             pattern = re.compile(r'([0-9.]+)')
             version_part = pattern.split(parts[1])[1]
