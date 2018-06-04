@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pip.download import PipSession
-from pip.req import parse_requirements
 from setuptools import setup, find_packages
 from os import path
 
@@ -22,9 +20,11 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst')) as f:
     readme = f.read()
 
-requirements = [str(ir.req) for ir in parse_requirements('requirements.txt', session=PipSession())]
+with open(path.join(here, 'requirements.txt')) as f:
+    requirements = f.read().splitlines()
 
-test_requirements = [str(ir.req) for ir in parse_requirements('requirements_test.txt', session=PipSession())]
+with open(path.join(here, 'requirements_test.txt')) as f:
+    test_requirements = f.read().splitlines()[1:]
 
 setup(
     name='deeptracy',
