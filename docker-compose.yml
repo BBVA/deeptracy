@@ -41,11 +41,28 @@ services:
     privileged: true
     command: ["./init_patton_db.sh"]
 
+#  patton-server:
+#    image: bbvalabs/patton-server
+#    environment:
+#      - WORKERS=1
+#      - BACKLOG=512
+#      - LISTEN_PORT=9000
+#      - POSTGRES_HOST=postgres
+#      - POSTGRES_PORT=5433
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+#      - POSTGRES_DB=patton
+#    ports:
+#      - 9000:8000
+#    depends_on:
+#      - postgres
+
   deeptracy-api:
     image: bbvalabs/deeptracy-api
     depends_on:
       - redis
       - postgres
+      - deeptracy
     ports:
       - 8080:8080
     environment:

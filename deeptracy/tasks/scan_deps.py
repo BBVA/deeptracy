@@ -41,11 +41,12 @@ def scan_deps(scan_id: str):
         scan_deps = get_dependencies(scan.lang, scan.source_path)
         logger.debug('found dependencies {}'.format(scan_deps))
 
-        # save all dependencies in the database
-        add_scan_deps(scan.id, scan_deps, datetime.now(), session)
-        scan.total_packages = len(scan_deps)
-        session.commit()
-        logger.debug('saved {} dependencies'.format(len(scan_deps)))
+        if scan_deps:
+            # save all dependencies in the database
+            add_scan_deps(scan.id, scan_deps, datetime.now(), session)
+            scan.total_packages = len(scan_deps)
+            session.commit()
+            logger.debug('saved {} dependencies'.format(len(scan_deps)))
 
         # compare the dependencies in this scan with the last scan for this project
         previous_scan = get_previous_scan_for_project(scan.project_id, scan.id, session)
@@ -232,10 +233,6 @@ def get_dependencies_for_python(sources: str, mounted_vol: str, docker_volumes: 
     dep_list = []
     if "python.txt" in listdir(sources):
         file = open(join(sources, "python.txt"), 'r')
-        for line in file.readlines():
-            parts = line.split()
-            name_package = parts[0]
-            pattern = re.compile(r'([0-9.]+)')
-            version_part = pattern.split(parts[1])[1]
-            dep_list.append('{}:{}'.format(name_package, version_part))
+        for line in file.readlines()[2:]:
+            dep_list.append(line.split())
     return dep_list

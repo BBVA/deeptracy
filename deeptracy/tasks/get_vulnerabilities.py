@@ -38,30 +38,31 @@ def get_vulnerabilities(scan_id: str):
         scan_deps = get_scan_deps(scan_id, session)
         scan = get_scan(scan_id, session)
         project = scan.project
-
-        url = '{}/api/v1/check-dependencies?cpeDetailed=1'.format(PATTON_URI)
-        req_body = {
-            'method': 'auto',
-            'source': 'auto',
-            'libraries': [{'library': scan_dep.library, 'version': scan_dep.version} for scan_dep in scan_deps]
-        }
-        response = requests.post(url, json=req_body).json()
-
         total_vulnerabilities = 0
-        if response:
-            for key in response:
-                if response[key]:
-                    [library, version] = key.split(':')
-                    scan_dep = get_scan_dep_by_scan_id_and_raw_dep(scan_id, '{}:{}'.format(library, version), session)
-                    cpes = response[key]
-                    for cpe_dict in cpes['cpes']:
-                        cpe = cpe_dict['cpe']
-                        cves = cpe_dict['cves']
-                        total_vulnerabilities += len(cves)
-                        # save all dependencies in the database
-                        add_scan_vuln(scan_dep.id, scan.id, scan.lang, cpe, cves, session)
-                        logger.info('saved {cves} cves for cpe {cpe}'.format(
-                            cves=len(cves), cpe=cpe))
+        if scan_deps:
+            url = '{}/api/v1/check-dependencies?cpeDetailed=1'.format(PATTON_URI)
+            req_body = {
+                'method': 'auto',
+                'source': 'auto',
+                'libraries': [{'library': scan_dep.library, 'version': scan_dep.version} for scan_dep in scan_deps]
+            }
+            response = requests.post(url, json=req_body).json()
+
+
+            if response:
+                for key in response:
+                    if response[key]:
+                        [library, version] = key.split(':')
+                        scan_dep = get_scan_dep_by_scan_id_and_raw_dep(scan_id, '{}:{}'.format(library, version), session)
+                        cpes = response[key]
+                        for cpe_dict in cpes['cpes']:
+                            cpe = cpe_dict['cpe']
+                            cves = cpe_dict['cves']
+                            total_vulnerabilities += len(cves)
+                            # save all dependencies in the database
+                            add_scan_vuln(scan_dep.id, scan.id, scan.lang, cpe, cves, session)
+                            logger.info('saved {cves} cves for cpe {cpe}'.format(
+                                cves=len(cves), cpe=cpe))
 
         scan.total_vulnerabilities = total_vulnerabilities
         update_scan_state(scan, ScanState.DONE, session)

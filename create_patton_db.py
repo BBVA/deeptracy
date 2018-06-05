@@ -9,7 +9,8 @@ conn = psycopg2.connect(os.environ['POSTGRES_URI'])
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = conn.cursor()
 try:
-    cur.execute('CREATE DATABASE patton')
+    print("1=====Creando base de datos")
+    cur.execute('CREATE DATABASE patton TEMPLATE template0')
     print("Base de datos patton creada correctamente")
     cmdInitDB = f"patton-server -C {os.environ['POSTGRES_URI']}/patton init-db"
     process = subprocess.Popen(cmdInitDB.split(), stdout=subprocess.PIPE)
@@ -25,5 +26,5 @@ except Exception as e:
     else:
         raise
 
-cmdInitDB = f"patton-server -C {os.environ['POSTGRES_URI']}/patton serve"
-process = subprocess.Popen(cmdInitDB.split(), stdout=subprocess.PIPE)
+#cmdInitDB = f"patton-server -C {os.environ['POSTGRES_URI']}/patton serve"
+#process = subprocess.Popen(cmdInitDB.split(), stdout=subprocess.PIPE)
