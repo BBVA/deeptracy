@@ -52,7 +52,8 @@ def get_vulnerabilities(scan_id: str):
                 for key in response:
                     if response[key]:
                         [library, version] = key.split(':')
-                        scan_dep = get_scan_dep_by_scan_id_and_raw_dep(scan_id, '{}:{}'.format(library, version), session)
+                        scan_dep = get_scan_dep_by_scan_id_and_raw_dep(scan_id,
+                                                                       '{}:{}'.format(library, version), session)
                         cpes = response[key]
                         for cpe_dict in cpes['cpes']:
                             cpe = cpe_dict['cpe']
