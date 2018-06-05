@@ -11,6 +11,6 @@ Feature: Patton
     When a task for "prepare_scan" is added to celery for the scan
     And all celery tasks are done
     #Then the scan folder is deleted
-    Then the vulnerabilities for the scan in the database exists
+    #Then the vulnerabilities for the scan in the database exists
     And the scan state is DONE
     And the results for the scan in the database exists
