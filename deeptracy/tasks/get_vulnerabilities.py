@@ -48,7 +48,6 @@ def get_vulnerabilities(scan_id: str):
             }
             response = requests.post(url, json=req_body).json()
 
-
             if response:
                 for key in response:
                     if response[key]:
