@@ -9,6 +9,10 @@ peewee = "*"
 environconfig = "*"
 ipython = "*"
 httpie = "*"
+"psycopg2" = "*"
+fakeredis = "*"
+rq = "*"
+redis = "*"
 
 [dev-packages]
 
