@@ -1,10 +1,13 @@
 import datetime
 import functools
+import time
 import uuid
 
 import bottle
 import environconfig
 import peewee
+import redis
+import rq
 
 
 ###############################################################################
@@ -21,21 +24,42 @@ class Config(environconfig.EnvironConfig):
     DATABASE_PASS = environconfig.StringVar(default=None)
 
     @environconfig.MethodVar
+    @functools.lru_cache()
     def DATABASE(env):
         """
         Return a peewee database handler with the given user configuration.
-        MethodVar uses memoization, so the objects behaves like a singleton.
 
         """
         if env.DATABASE_HOST is None:
             return peewee.SqliteDatabase(':memory:')
         else:
-            return peewee.PostgresqlDatabase(
-                env.DATABASE_NAME,
-                user=env.DATABASE_USER,
-                password=env.DATABASE_PASS,
-                host=env.DATABASE_HOST)
+            return peewee.PostgresqlDatabase(None)
 
+    REDIS_HOST = environconfig.StringVar(default=None)
+    REDIS_PORT = environconfig.IntVar(default=6397)
+    REDIS_DB = environconfig.IntVar(default=0)
+
+    @environconfig.MethodVar
+    @functools.lru_cache()
+    def REDIS(env):
+        if env.REDIS_HOST is None:
+            import fakeredis
+            return fakeredis.FakeStrictRedis()
+        else:
+            return redis.StrictRedis(host=env.REDIS_HOST,
+                                     port=env.REDIS_PORT,
+                                     db=env.REDIS_DB)
+
+    @environconfig.MethodVar
+    @functools.lru_cache()
+    def QUEUE(env):
+        return rq.Queue(is_async=env.REDIS_HOST is not None,
+                        connection=env.REDIS)
+
+
+    #
+    # Service configuration
+    #
     HOST = environconfig.StringVar(default='localhost')
     PORT = environconfig.IntVar(default=8088)
     DEBUG = environconfig.BooleanVar(default=False)
@@ -44,12 +68,13 @@ class Config(environconfig.EnvironConfig):
 ###############################################################################
 #                               Database Models                               #
 ###############################################################################
+
 class BaseModel(peewee.Model):
     """
     BaseModel is an abstract model with options affecting all its
     children.
-
     """
+
     id = peewee.UUIDField(primary_key=True, default=uuid.uuid4)
 
     class Meta:
@@ -57,6 +82,7 @@ class BaseModel(peewee.Model):
 
 
 class Target(BaseModel):
+
     repo = peewee.CharField(index=True)
     commit = peewee.CharField()
 
@@ -67,6 +93,7 @@ class Target(BaseModel):
 
 
 class Analysis(BaseModel):
+
     target = peewee.ForeignKeyField(Target, backref='analyses')
     started = peewee.DateTimeField(default=datetime.datetime.utcnow)
     finished = peewee.DateTimeField(null=True, default=None)
@@ -75,6 +102,7 @@ class Analysis(BaseModel):
 
 
 class RequestedDependency(BaseModel):
+
     # User provided data
     spec = peewee.CharField()
     installer = peewee.CharField()
@@ -194,10 +222,35 @@ def analysis_finished(analysis_id):
 ###############################################################################
 #                           Command Line Interface                            #
 ###############################################################################
+def init_db():
+    if Config.DATABASE_HOST is not None:
+        Config.DATABASE.init(
+            Config.DATABASE_NAME,
+            user=Config.DATABASE_USER,
+            password=Config.DATABASE_PASS,
+            host=Config.DATABASE_HOST)
+
+    try:
+        Config.DATABASE.connect()
+    except Exception as exc:
+        return False
+    else:
+        return True
+
+
 def main():
+    # Wait for database connection
+    print("Initializing database")
+    while not init_db():
+        print("Waiting for database...")
+        time.sleep(1)
+
+    # Create database when empty
+    print("Creating tables")
     with Config.DATABASE:
         Config.DATABASE.create_tables(BaseModel.__subclasses__())
 
+    print("Starting application")
     application.run(host=Config.HOST,
                     port=Config.PORT,
                     reloader=Config.DEBUG)
