@@ -29,7 +29,7 @@ class Config(environconfig.EnvironConfig):
             return peewee.PostgresqlDatabase(None)
 
     REDIS_HOST = environconfig.StringVar(default=None)
-    REDIS_PORT = environconfig.IntVar(default=6397)
+    REDIS_PORT = environconfig.IntVar(default=6379)
     REDIS_DB = environconfig.IntVar(default=0)
 
     @environconfig.MethodVar
@@ -49,6 +49,8 @@ class Config(environconfig.EnvironConfig):
         return rq.Queue(is_async=env.REDIS_HOST is not None,
                         connection=env.REDIS)
 
+    PATTON_HOST = environconfig.StringVar(
+        default='patton.owaspmadrid.org:8000')
     #
     # Service configuration
     #

@@ -1,5 +1,6 @@
-import uuid
 import datetime
+import time
+import uuid
 
 from deeptracy import Config
 
@@ -56,6 +57,7 @@ class InstalledDependency(BaseModel):
     version = peewee.CharField()
     installer = peewee.CharField()
     last_checked = peewee.DateTimeField(null=True, default=None)
+    vulnerable = peewee.BooleanField(default=False)
 
     class Meta:
         indexes = (
@@ -70,6 +72,11 @@ class VulnerableDependencies(BaseModel):
     ref = peewee.CharField()  # Maybe CVE, maybe not.
     details = peewee.TextField()
 
+    class Meta:
+        indexes = (
+            (('dependency', 'provider', 'ref'), True),
+        )
+
 
 class AnalysisDependencies(BaseModel):
     analysis = peewee.ForeignKeyField(Analysis, backref='dependencies')
@@ -80,15 +87,6 @@ class AnalysisDependencies(BaseModel):
 
 
 def init():
-    if Config.DATABASE_HOST is not None:
-        Config.DATABASE.init(
-            Config.DATABASE_NAME,
-            user=Config.DATABASE_USER,
-            password=Config.DATABASE_PASS,
-            host=Config.DATABASE_HOST)
-    else:
-        Config.DATABASE.init('deeptracy.db')
-
     def is_ready():
         try:
             with Config.DATABASE:
@@ -105,3 +103,13 @@ def init():
     while not is_ready():
         print("Waiting for database...")
         time.sleep(1)
+
+
+if Config.DATABASE_HOST is not None:
+    Config.DATABASE.init(
+        Config.DATABASE_NAME,
+        user=Config.DATABASE_USER,
+        password=Config.DATABASE_PASS,
+        host=Config.DATABASE_HOST)
+else:
+    Config.DATABASE.init('deeptracy.db')
