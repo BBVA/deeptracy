@@ -57,7 +57,6 @@ class InstalledDependency(BaseModel):
     version = peewee.CharField()
     installer = peewee.CharField()
     last_checked = peewee.DateTimeField(null=True, default=None)
-    vulnerable = peewee.BooleanField(default=False)
 
     class Meta:
         indexes = (

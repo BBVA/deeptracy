@@ -49,9 +49,6 @@ def analyze_dependency(dependency_id):
             time.sleep(1)
 
         dependency.last_checked = datetime.datetime.utcnow()
-        dependency.vulnerable = bool(
-            VulnerableDependencies.select().where(
-                VulnerableDependencies.dependency==dependency).count())
         dependency.save()
 
 
@@ -70,70 +67,39 @@ def providers_for_installer(installer):
     return providers
 
 
-"""
-query {
-  analysis (where: {id: {_eq: "b1c486b3-2366-44ea-b659-26a0d192e37b"}}){
-    id
-    dependencies	(where: {installed: {vulnerable: {_eq: true}}}){
-      installed {
-        package_name
-        version
-        vulnerabilities {
-          ref
-          provider
-        }
-      }
-    }
-  }
-}
-"""
-
-
-@provider("*")
-def patton(dependency_id):
-    # [host]/api/v1/check-dependencies?cpeDetailed=1
-    # dep_list: Dict[str, str]
-    # obj_query = {
-    #     "method": "auto",
-    #     "libraries": [
-    #         {
-    #             "library": dep_name,
-    #             "version": dep_version
-    #         }
-    #         for dep_name, dep_version in dep_list.items()
-    #     ]
-    # }
-    # return obj_query
+def patton(method, dependency_id):
     with Config.DATABASE:
         dependency = InstalledDependency.get(id=dependency_id)
 
-        # available sources: nmap,dpkg,auto,python,alpine,golang,simple_parser
-        if dependency.installer == 'python':
-            method = 'python'
-        else:
-            method = 'auto'
-
         response = requests.post(
             f"http://{Config.PATTON_HOST}/api/v1/check-dependencies?cpeDetailed=1",
-            json={"method": "auto",
+            json={"method": "python",
                   "libraries": [{"library": dependency.package_name,
                                  "version": dependency.version}]})
 
         if response.status_code != 200:
-            print(response.text)
+            print("Something went wrong!", response.staus_code, response.text)
             return
-        result = scalpl.Cut(response.json(), sep='->')
-        print(result)
-        cpe_path = f'{dependency.package_name}:{dependency.version}->cpes'
+        else:
+            try:
+                cpes, *_ = list(response.json().values())
+                vulns = 0
+                for cpe in cpes["cpes"]:
+                    for cve in cpe.get("cves", []):
+                        vulns += 1
+                        print("lalala", cve['cve'])
+                        VulnerableDependencies.get_or_create(
+                            dependency=dependency,
+                            provider="patton",
+                            ref=cve['cve'],
+                            details=json.dumps(dict(cve)))
+                        dependency
+            except Exception as exc:
+                print("Error parsing result", exc)
+            else:
+                print("Finish, %d vulns inserted" % vulns)
 
-        try:
-            for cpe in result.all(cpe_path):
-                for cve in cpe.all('cves'):
-                    VulnerableDependencies.get_or_create(
-                        dependency=dependency,
-                        provider="patton",
-                        ref=cve['cve'],
-                        details=json.dumps(dict(cve)))
-                    dependency
-        except Exception as exc:
-            print("Error parsing result", exc)
+
+@provider("deeptracy-python:*")
+def patton_python(dependency_id):
+    patton("python", dependency_id)
