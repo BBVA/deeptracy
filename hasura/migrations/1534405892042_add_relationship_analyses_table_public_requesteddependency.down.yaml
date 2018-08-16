@@ -1,0 +1,6 @@
+- args:
+    relationship: analyses
+    table:
+      name: requesteddependency
+      schema: public
+  type: drop_relationship

@@ -1,0 +1,12 @@
+- args:
+    name: analysis
+    table:
+      name: target
+      schema: public
+    using:
+      foreign_key_constraint_on:
+        column: target_id
+        table:
+          name: analysis
+          schema: public
+  type: create_array_relationship

@@ -1,0 +1,6 @@
+- args:
+    relationship: dependency
+    table:
+      name: vulnerabledependencies
+      schema: public
+  type: drop_relationship

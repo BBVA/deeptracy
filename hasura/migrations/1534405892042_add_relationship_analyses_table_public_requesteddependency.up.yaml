@@ -1,0 +1,12 @@
+- args:
+    name: analyses
+    table:
+      name: requesteddependency
+      schema: public
+    using:
+      foreign_key_constraint_on:
+        column: requested_dependency_id
+        table:
+          name: analysisdependencies
+          schema: public
+  type: create_array_relationship

@@ -1,0 +1,8 @@
+- args:
+    name: target
+    table:
+      name: analysis
+      schema: public
+    using:
+      foreign_key_constraint_on: target_id
+  type: create_object_relationship

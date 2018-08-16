@@ -1,0 +1,6 @@
+- args:
+    relationship: target
+    table:
+      name: analysis
+      schema: public
+  type: drop_relationship

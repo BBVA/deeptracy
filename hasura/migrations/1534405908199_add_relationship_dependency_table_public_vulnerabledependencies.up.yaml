@@ -1,0 +1,8 @@
+- args:
+    name: dependency
+    table:
+      name: vulnerabledependencies
+      schema: public
+    using:
+      foreign_key_constraint_on: dependency_id
+  type: create_object_relationship

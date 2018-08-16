@@ -1,62 +1,72 @@
 version: '3.6'
 services:
-  postgres:
-    image: postgres
-    environment:
-        - POSTGRES_PASSWORD=mysecretpassword
-    restart: always
-    volumes:
-        - db_data:/var/lib/postgresql/data
-  redis:
-    image: redis
-  graphql-engine:
-    image: hasura/graphql-engine:v1.0.0-alpha11
-    ports:
-        - "8080:8080"
-    depends_on:
-        - "postgres"
-    restart: always
-    environment:
-        - POSTGRES_PASSWORD=mysecretpassword
-    command: >
-      /bin/sh -c "
-      graphql-engine --database-url postgres://postgres:$${POSTGRES_PASSWORD}@postgres:5432/postgres serve --enable-console;
-      "
-  deeptracy-server:
-    image: deeptracy
-    command: python -u -m deeptracy
-    env_file:
-        - deeptracy.env
-    ports:
-        - "8088:8088"
-    depends_on:
-        - postgres
-        - redis
-    links:
-        - postgres
-        - redis
-  deeptracy-worker:
-    image: deeptracy
-    command: rq worker -u redis://redis
-    env_file:
-        - deeptracy.env
-    depends_on:
-        - postgres
-        - redis
-    links:
-        - postgres
-        - redis
-  deeptracy-buildbot:
-    image: deeptracy
-    command: /bin/sh -c "cd /deeptracy/buildbot && buildbot start --nodaemon"
-    ports:
-        - "8010:8010"
-        - "9989:9989"
-    environment:
-        - DEEPTRACY_BACKEND_URL=http://deeptracy-server:8088
-    depends_on:
-        - deeptracy-server
-    volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
+    postgres:
+        image: postgres
+        environment:
+            - POSTGRES_PASSWORD=mysecretpassword
+        restart: always
+        volumes:
+            - db_data:/var/lib/postgresql/data
+    redis:
+        image: redis
+    graphql-engine:
+        image: hasura/graphql-engine:v1.0.0-alpha12
+        ports:
+            - "8080:8080"
+        depends_on:
+            - "postgres"
+        restart: always
+        environment:
+            - POSTGRES_PASSWORD=mysecretpassword
+        command: >
+          /bin/sh -c "
+          graphql-engine --database-url postgres://postgres:$${POSTGRES_PASSWORD}@postgres:5432/postgres serve --enable-console;
+          "
+    deeptracy-server:
+        image: deeptracy
+        command: python -u -m deeptracy
+        env_file:
+            - deeptracy.env
+        ports:
+            - "8088:8088"
+        depends_on:
+            - postgres
+            - redis
+        links:
+            - postgres
+            - redis
+    deeptracy-worker:
+        image: deeptracy
+        command: rq worker -u redis://redis
+        env_file:
+            - deeptracy.env
+        depends_on:
+            - postgres
+            - redis
+        links:
+            - postgres
+            - redis
+    deeptracy-buildbot:
+        image: deeptracy
+        command: /bin/sh -c "cd /deeptracy/buildbot && buildbot upgrade-master && buildbot start --nodaemon"
+        ports:
+            - "8010:8010"
+            - "9989:9989"
+        environment:
+            - DEEPTRACY_BACKEND_URL=http://deeptracy-server:8088
+            - BUILDBOT_DB_URL=postgresql://postgres:mysecretpassword@postgres:5432/postgres
+        depends_on:
+            - deeptracy-server
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+    hasura-migrate:
+        build:
+            context: ./hasura/cli
+            dockerfile: Dockerfile
+        command: /bin/sh -c "cd /hasura && /go/bin/hasura migrate apply"
+        volumes:
+            - ./hasura:/hasura
+        links:
+            - graphql-engine
 volumes:
-  db_data:
+    db_data:
