@@ -37,7 +37,7 @@ services:
             - redis
     deeptracy-worker:
         image: deeptracy
-        command: rq worker -u redis://redis
+        command: celery worker -A deeptracy.providers --loglevel=info
         env_file:
             - deeptracy.env
         depends_on:
@@ -63,7 +63,9 @@ services:
         build:
             context: ./hasura/cli
             dockerfile: Dockerfile
-        command: /bin/sh -c "cd /hasura && /go/bin/hasura migrate apply"
+        command: /bin/sh -c "sleep 10 && cd /hasura && /go/bin/hasura migrate apply"
+        depends_on:
+            - deeptracy-server
         volumes:
             - ./hasura:/hasura
         links:

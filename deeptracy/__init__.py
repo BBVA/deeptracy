@@ -1,9 +1,9 @@
 import functools
+import datetime
 
 import environconfig
 import peewee
-import redis
-import rq
+import celery
 
 
 class Config(environconfig.EnvironConfig):
@@ -35,22 +35,21 @@ class Config(environconfig.EnvironConfig):
     @environconfig.MethodVar
     @functools.lru_cache()
     def REDIS(env):
-        if env.REDIS_HOST is None:
-            import fakeredis
-            return fakeredis.FakeStrictRedis()
-        else:
-            return redis.StrictRedis(host=env.REDIS_HOST,
-                                     port=env.REDIS_PORT,
-                                     db=env.REDIS_DB)
+        return f"redis://{env.REDIS_HOST}:{env.REDIS_PORT}/{env.REDIS_DB}"
 
     @environconfig.MethodVar
     @functools.lru_cache()
-    def QUEUE(env):
-        return rq.Queue(is_async=env.REDIS_HOST is not None,
-                        connection=env.REDIS)
+    def CELERY(env):
+        return celery.Celery(broker=env.REDIS, backend=env.REDIS)
 
     PATTON_HOST = environconfig.StringVar(
         default='patton.owaspmadrid.org:8000')
+    SAFETY_API_KEY = environconfig.StringVar(default=None)
+    BOTTLE_MEMFILE_MAX = environconfig.IntVar(default=1024*1024)
+    MAX_ANALYSIS_INTERVAL = environconfig.CustomVar(
+        lambda secs: datetime.timedelta(seconds=int(seconds)),
+        default=datetime.timedelta(seconds=24*60*60))
+
     #
     # Service configuration
     #
