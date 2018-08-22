@@ -1,5 +1,0 @@
-- args:
-    table:
-      name: installeddependency
-      schema: public
-  type: untrack_table

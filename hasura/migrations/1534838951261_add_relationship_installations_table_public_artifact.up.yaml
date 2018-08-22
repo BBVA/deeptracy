@@ -1,12 +1,12 @@
 - args:
-    name: vulnerabilities
+    name: installations
     table:
-      name: installeddependency
+      name: artifact
       schema: public
     using:
       foreign_key_constraint_on:
-        column: dependency_id
+        column: artifact_id
         table:
-          name: vulnerabledependencies
+          name: installation
           schema: public
   type: create_array_relationship

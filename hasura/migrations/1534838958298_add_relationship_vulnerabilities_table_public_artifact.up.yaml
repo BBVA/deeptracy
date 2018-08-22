@@ -1,12 +1,12 @@
 - args:
-    name: analysis
+    name: vulnerabilities
     table:
-      name: target
+      name: artifact
       schema: public
     using:
       foreign_key_constraint_on:
-        column: target_id
+        column: artifact_id
         table:
-          name: analysis
+          name: vulnerability
           schema: public
   type: create_array_relationship

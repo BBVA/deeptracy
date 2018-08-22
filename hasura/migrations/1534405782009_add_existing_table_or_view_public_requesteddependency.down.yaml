@@ -1,5 +1,0 @@
-- args:
-    table:
-      name: requesteddependency
-      schema: public
-  type: untrack_table

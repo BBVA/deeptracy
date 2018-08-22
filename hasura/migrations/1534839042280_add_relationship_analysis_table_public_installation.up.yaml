@@ -1,7 +1,7 @@
 - args:
     name: analysis
     table:
-      name: analysisdependencies
+      name: installation
       schema: public
     using:
       foreign_key_constraint_on: analysis_id

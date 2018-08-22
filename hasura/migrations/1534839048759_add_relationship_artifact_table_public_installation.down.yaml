@@ -1,6 +1,6 @@
 - args:
-    relationship: installed
+    relationship: artifact
     table:
-      name: analysisdependencies
+      name: installation
       schema: public
   type: drop_relationship

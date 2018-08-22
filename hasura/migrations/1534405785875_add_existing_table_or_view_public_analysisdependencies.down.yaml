@@ -1,5 +1,0 @@
-- args:
-    table:
-      name: analysisdependencies
-      schema: public
-  type: untrack_table

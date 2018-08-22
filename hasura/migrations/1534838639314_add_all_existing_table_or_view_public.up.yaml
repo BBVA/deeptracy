@@ -1,0 +1,20 @@
+- args:
+    name: target
+    schema: public
+  type: add_existing_table_or_view
+- args:
+    name: analysis
+    schema: public
+  type: add_existing_table_or_view
+- args:
+    name: installation
+    schema: public
+  type: add_existing_table_or_view
+- args:
+    name: artifact
+    schema: public
+  type: add_existing_table_or_view
+- args:
+    name: vulnerability
+    schema: public
+  type: add_existing_table_or_view

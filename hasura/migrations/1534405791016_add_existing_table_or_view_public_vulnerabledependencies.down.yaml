@@ -1,5 +1,0 @@
-- args:
-    table:
-      name: vulnerabledependencies
-      schema: public
-  type: untrack_table

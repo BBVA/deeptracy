@@ -1,12 +1,12 @@
 - args:
-    name: analyses
+    name: installations
     table:
-      name: requesteddependency
+      name: analysis
       schema: public
     using:
       foreign_key_constraint_on:
-        column: requested_dependency_id
+        column: analysis_id
         table:
-          name: analysisdependencies
+          name: installation
           schema: public
   type: create_array_relationship

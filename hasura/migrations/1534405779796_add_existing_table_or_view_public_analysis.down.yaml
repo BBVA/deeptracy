@@ -1,5 +1,0 @@
-- args:
-    table:
-      name: analysis
-      schema: public
-  type: untrack_table

@@ -1,6 +1,0 @@
-- args:
-    relationship: analyses
-    table:
-      name: installeddependency
-      schema: public
-  type: drop_relationship
