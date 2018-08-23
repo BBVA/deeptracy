@@ -1,7 +1,8 @@
 import datetime
 
 from deeptracy import Config
-from deeptracy.providers import analyze_artifacts, mark_task_done
+from deeptracy import providers
+from deeptracy import tasks
 from deeptracy.model import Analysis
 from deeptracy.model import Installation
 from deeptracy.model import Artifact
@@ -27,14 +28,12 @@ def _close_db():
 
 
 @application.route('/analysis/', method='POST')
-def analysis_started():
+def analysis_create():
     """
-    Signal from buildbot that an analysis has started.
-
     Requires a JSON object with the following parameters:
-        * repo: The repository.
+        * repository: The repository.
         * commit: The commit.
-        * notify: Webhook to notify to when vulnerabilities are detected.
+        * webhook: Webhook to notify to when vulnerabilities are detected.
 
     Returns a JSON object containing the id of the created analysis.
 
@@ -42,13 +41,61 @@ def analysis_started():
     with Config.DATABASE.atomic():
         analysis = Analysis.create(
             target=Target.get_or_create(
-                repository=bottle.request.json['repo'],
+                repository=bottle.request.json['repository'],
                 commit=bottle.request.json['commit'])[0],
-            notify=bottle.request.json['notify'])
+            webhook=bottle.request.json.get('webhook', None))
+
+    tasks.request_extraction.delay(analysis.id)
+
     return {'id': str(analysis.id)}
 
 
-@application.route('/analysis/<analysis_id>/dependencies', method='PUT')
+@application.route('/analysis/<analysis_id>/extraction/started', method='PUT')
+def extraction_started(analysis_id):
+    """
+    Signal from buildbot that the extraction phase for an analysis has started.
+
+    """
+    with Config.DATABASE.atomic():
+        analysis = Analysis.get(Analysis.id == analysis_id)
+        # TODO: Check analysis state or implement a state machine inside the
+        # model
+        analysis.state = 'EXTRACTING'
+        analysis.save()
+
+
+@application.route('/analysis/<analysis_id>/extraction/succeeded',
+                   method='PUT')
+def extraction_succeeded(analysis_id):
+    """
+    Dependency extraction phase succeeded.
+
+    Must contain a JSON object with the number of tasks spawned in the server
+    (requests made to `/dependencies` and `/vulnerabilities` endpoints.
+
+    Ex::
+       {'task_count': <int>}
+    """
+    with Config.DATABASE.atomic():
+        analysis = Analysis.get(Analysis.id == analysis_id)
+        analysis.state = 'ANALYZYING'
+        analysis.task_count = int(bottle.request.json['task_count'])
+        analysis.save()
+
+
+@application.route('/analysis/<analysis_id>/extraction/failed', method='PUT')
+def extraction_failed(analysis_id):
+    """
+    Dependency extraction phase failed.
+
+    """
+    with Config.DATABASE.atomic():
+        analysis = Analysis.get(Analysis.id == analysis_id)
+        analysis.state = 'FAILURE'
+        analysis.save()
+
+
+@application.route('/analysis/<analysis_id>/dependencies', method='POST')
 def dependencies_found(analysis_id):
     """
     Installation data from buildbot.
@@ -67,28 +114,13 @@ def dependencies_found(analysis_id):
     artifacts = create_dependencies(analysis_id, bottle.request.json)
 
     # Launch dependency scan and mark done when finished.
-    task = (analyze_artifacts(artifacts) | mark_task_done.si(analysis_id)).delay()
+    analysis_task = (
+        providers.analyze_artifacts(artifacts)  # Returns a group of tasks.
+        | tasks.mark_task_done.si(analysis_id)).delay()
 
-    return {'task_id': task.id, 'scanning': len(artifacts)}
+    return {'task_id': analysis_task.id, 'scanning': len(artifacts)}
 
-@application.route('/analysis/<analysis_id>/vulnerabilities', method='PUT')
+
+@application.route('/analysis/<analysis_id>/vulnerabilities', method='POST')
 def vulnerabilities_found(analysis_id):
     pass
-
-
-@application.route('/analysis/<analysis_id>/state/build-finished',
-                   method='PUT')
-def analysis_build_finished(analysis_id):
-    """
-    Dependency extraction phase finished.
-
-    Must contain a JSON object with the number of tasks spawned in the server
-    (requests made to `/dependencies` and `/vulnerabilities` endpoints.
-
-    Ex::
-       {'task_count': <int>}
-    """
-    with Config.DATABASE.atomic():
-        analysis = Analysis.get(Analysis.id == analysis_id)
-        analysis.task_count = int(bottle.request.json['task_count'])
-        analysis.save()

@@ -37,7 +37,7 @@ services:
             - redis
     deeptracy-worker:
         image: deeptracy
-        command: celery worker -A deeptracy.providers --loglevel=info
+        command: celery worker -A deeptracy.tasks -A deeptracy.providers --loglevel=info
         env_file:
             - deeptracy.env
         depends_on:

@@ -14,12 +14,12 @@ from deeptracy import model
 from deeptracy.model import Analysis
 from deeptracy.model import Artifact
 from deeptracy.model import Vulnerability
+from deeptracy.tasks import app
 
-import logging
 
 try:
-    import safety.util as safetyutil
     from safety import safety
+    import safety.util as safetyutil
 except ImportError:
     WITH_SAFETY_LIB = False
 else:
@@ -27,19 +27,6 @@ else:
 
 
 PROVIDERS = collections.defaultdict(set)  # {inst: {prov1, prov2}}
-app = Config.CELERY
-
-
-@app.task
-def mark_task_done(analysis_id):
-    print("Marking done", analysis_id)
-    with Config.DATABASE.atomic():
-        # This query is not an `UPDATE` because we need `save()` to be executed
-        # for the `state` field to be recalculated. The atomic()
-        # context-manager should protect us against race conditions.
-        analysis = Analysis.get(Analysis.id == analysis_id)
-        analysis.tasks_done += 1
-        analysis.save()
 
 
 def analyze_artifacts(artifacts):

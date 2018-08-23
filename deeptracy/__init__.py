@@ -42,6 +42,8 @@ class Config(environconfig.EnvironConfig):
     def CELERY(env):
         return celery.Celery(broker=env.REDIS, backend=env.REDIS)
 
+    BUILDBOT_API = environconfig.StringVar(
+        default='http://deeptracy-buildbot:8010')
     PATTON_HOST = environconfig.StringVar(
         default='patton.owaspmadrid.org:8000')
     SAFETY_API_KEY = environconfig.StringVar(default=None)

@@ -5,10 +5,11 @@ import uuid
 from deeptracy import Config
 
 import peewee
-from playhouse.postgres_ext import BinaryJSONField
+from playhouse import signals
+from playhouse import postgres_ext
 
 
-class BaseModel(peewee.Model):
+class BaseModel(signals.Model):
     """
     BaseModel is an abstract model with options affecting all its
     children.
@@ -40,11 +41,17 @@ class Analysis(BaseModel):
     started = peewee.DateTimeField(
         default=datetime.datetime.utcnow,
         help_text='Timestamp of analysis start.')
+    webhook = peewee.CharField(
+        null=True,
+        default=True,
+        help_text='URL to notify when analysis is DONE')
     state = peewee.CharField(
         choices=(
             ('CREATED', 'CREATED'),
-            ('EXTRACTED', 'EXTRACTED'),
-            ('ANALYZED', 'ANALYZED')),
+            ('EXTRACTING', 'EXTRACTING'),
+            ('ANALYZYING', 'ANALYZYING'),
+            ('SUCCESS', 'SUCCESS'),
+            ('FAILURE', 'FAILURE')),
         default='CREATED',
         help_text='Current analysis state.')
     task_count = peewee.IntegerField(
@@ -56,14 +63,21 @@ class Analysis(BaseModel):
         help_text='Number of finished tasks.')
 
     def save(self, *args, **kwargs):
-        if self.task_count == self.tasks_done:
-            self.state = 'ANALYZED'
-        elif self.task_count is not None:
-            self.state = 'EXTRACTED'
-        else:
-            self.state = 'CREATED'
+        if (self.state == 'ANALYZYING'
+                and self.task_count == self.tasks_done):
+            self.state = 'SUCCESS'
         super().save(*args, **kwargs)
 
+
+@signals.post_save(sender=Analysis)
+def notify_analysis_done(model_class, instance, created):
+    if (instance.state in ['FAILURE', 'SUCCESS']
+            and instance.webhook is not None):
+        from deeptracy import tasks
+        tasks.notify_user.delay(
+            webhook=instance.webhook,
+            analysis_id=instance.id,
+            state=instance.state)
 
 
 class Artifact(BaseModel):
@@ -99,7 +113,7 @@ class Vulnerability(BaseModel):
         help_text='Tool providing the information.')
     reference = peewee.CharField(
         help_text='Vulnerability identifier used by the provider.')
-    details = BinaryJSONField(
+    details = postgres_ext.BinaryJSONField(
         help_text='Extra information provided about the vulnerability.')
     last_seen = peewee.DateTimeField(
         default=datetime.datetime.utcnow,
