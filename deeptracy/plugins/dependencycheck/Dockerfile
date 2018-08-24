@@ -1,0 +1,8 @@
+ARG DC_VERSION
+FROM owasp/dependency-check:$DC_VERSION
+RUN /usr/share/dependency-check/bin/dependency-check.sh --updateonly -d /usr/share/dependency-check/notavolume
+
+COPY --from=bbvalabsci/buildbot-washer-worker:latest /washer /washer
+COPY tasks.py /washer/
+ENTRYPOINT ["/washer/entrypoint.sh"]
+CMD ["/washer/tasks.py"]
