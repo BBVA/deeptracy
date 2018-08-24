@@ -30,12 +30,26 @@ def _close_db():
 @application.route('/analysis/', method='POST')
 def analysis_create():
     """
+    Create and start a new analysis for the given repository & commit.
+
     Requires a JSON object with the following parameters:
         * repository: The repository.
         * commit: The commit.
-        * webhook: Webhook to notify to when vulnerabilities are detected.
+        * webhook (optional): Webhook to notify to when the analysis finish.
+
+    Example:
+
+    .. code-block:: json
+
+       {"repository": "https://github.com/nilp0inter/gitsectest",
+        "commit": "fdd09edd73f3fe87ea4265eeddb95935c7d25a51",
+        "webhook": "http://myapp.com/analysis-finished"}
 
     Returns a JSON object containing the id of the created analysis.
+
+    .. code-block:: json
+
+       {"id": "b6e98743-7830-4aef-adf6-6a0b022f778a"}
 
     """
     with Config.DATABASE.atomic():
@@ -55,6 +69,8 @@ def extraction_started(analysis_id):
     """
     Signal from buildbot that the extraction phase for an analysis has started.
 
+    .. note:: Internal API
+
     """
     with Config.DATABASE.atomic():
         analysis = Analysis.get(Analysis.id == analysis_id)
@@ -73,8 +89,14 @@ def extraction_succeeded(analysis_id):
     Must contain a JSON object with the number of tasks spawned in the server
     (requests made to `/dependencies` and `/vulnerabilities` endpoints.
 
-    Ex::
+    Example result:
+
+    .. code-block:: json
+
        {'task_count': <int>}
+
+    .. note:: Internal API
+
     """
     with Config.DATABASE.atomic():
         analysis = Analysis.get(Analysis.id == analysis_id)
@@ -87,6 +109,8 @@ def extraction_succeeded(analysis_id):
 def extraction_failed(analysis_id):
     """
     Dependency extraction phase failed.
+
+    .. note:: Internal API
 
     """
     with Config.DATABASE.atomic():
@@ -108,6 +132,8 @@ def dependencies_found(analysis_id):
         * name: The real package name.
         * version: The installed version of the package.
 
+    .. note:: Internal API
+
     """
 
     # Create database objects returning a list of scanneable artifacts.
@@ -123,4 +149,10 @@ def dependencies_found(analysis_id):
 
 @application.route('/analysis/<analysis_id>/vulnerabilities', method='POST')
 def vulnerabilities_found(analysis_id):
+    """
+    Vulnerability data from buildbot.
+
+    .. note:: Internal API
+
+    """
     pass
