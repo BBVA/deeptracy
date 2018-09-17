@@ -1,0 +1,4 @@
+sphinxcontrib-actdiag
+sphinxcontrib-blockdiag
+sphinxcontrib-httpdomain
+sphinxcontrib-seqdiag
