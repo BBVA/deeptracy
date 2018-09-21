@@ -1,12 +1,20 @@
+"""
+This module contains the database model of DeepTracy.
+
+The database model is managed with peewee.
+
+"""
+# pylint: disable=missing-docstring,too-few-public-methods,unused-argument
+# pylint: disable=no-else-return,no-member,not-context-manager
 import datetime
 import time
 import uuid
 
-from deeptracy import Config
-
-import peewee
-from playhouse import signals
 from playhouse import postgres_ext
+from playhouse import signals
+import peewee
+
+from deeptracy import Config
 
 
 class BaseModel(signals.Model):
@@ -143,7 +151,7 @@ class Installation(BaseModel):
 def create_dependencies(analysis_id, dependencies):
     """
     Register Installations for an Analysis, creating Artifacts when necessary.
- 
+
     Return a list of the artifacts needing analysis.
     """
     artifacts = set()
@@ -171,7 +179,7 @@ def init():
                 # Create database when empty
                 print('Creating tables')
                 Config.DATABASE.create_tables(BaseModel.__subclasses__())
-        except Exception as exc:
+        except Exception:  # TODO: Capture specific exception
             return False
         else:
             return True

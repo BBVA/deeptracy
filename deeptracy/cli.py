@@ -1,11 +1,14 @@
+"""
+Command line interface for deeptracy.
+
+"""
 from deeptracy import Config
 from deeptracy import model
 from deeptracy.web import application
 
-import time
-
 
 def main():
+    """Initialize and start the application."""
     model.init()
 
     print("Starting application")

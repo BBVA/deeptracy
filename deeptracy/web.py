@@ -1,11 +1,14 @@
-import datetime
+"""
+This module contains the entrypoints of the control http interface.
 
+The webapp is defined using bottle.
+
+"""
+# pylint: disable=invalid-name,no-member,unsubscriptable-object
 from deeptracy import Config
 from deeptracy import providers
 from deeptracy import tasks
 from deeptracy.model import Analysis
-from deeptracy.model import Installation
-from deeptracy.model import Artifact
 from deeptracy.model import Target
 from deeptracy.model import create_dependencies
 

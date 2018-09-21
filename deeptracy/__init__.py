@@ -1,3 +1,9 @@
+"""
+Contains the environconfig classes to parse environment variable.
+
+"""
+# pylint: disable=no-self-argument,invalid-name,no-else-return
+
 import functools
 import datetime
 
@@ -7,6 +13,7 @@ import celery
 
 
 class Config(environconfig.EnvironConfig):
+    """Main environment variable parser."""
     #
     # Postgres configuration.
     # Do not pass HOST to have a Sqlite in-memory database.
@@ -35,11 +42,13 @@ class Config(environconfig.EnvironConfig):
     @environconfig.MethodVar
     @functools.lru_cache()
     def REDIS(env):
+        """Build the redis connection URI."""
         return f"redis://{env.REDIS_HOST}:{env.REDIS_PORT}/{env.REDIS_DB}"
 
     @environconfig.MethodVar
     @functools.lru_cache()
     def CELERY(env):
+        """Build the configured Celery object."""
         return celery.Celery(broker=env.REDIS, backend=env.REDIS)
 
     BUILDBOT_API = environconfig.StringVar(
@@ -49,7 +58,7 @@ class Config(environconfig.EnvironConfig):
     SAFETY_API_KEY = environconfig.StringVar(default=None)
     BOTTLE_MEMFILE_MAX = environconfig.IntVar(default=1024*1024)
     MAX_ANALYSIS_INTERVAL = environconfig.CustomVar(
-        lambda secs: datetime.timedelta(seconds=int(seconds)),
+        lambda s: datetime.timedelta(seconds=int(s)),
         default=datetime.timedelta(seconds=24*60*60))
 
     #

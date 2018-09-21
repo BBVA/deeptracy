@@ -1,8 +1,10 @@
-import collections
-import functools
+"""
+This module contains the Celery tasks.
+
+"""
+# pylint: disable=invalid-name,no-member
 import json
 
-import celery
 import requests
 
 from deeptracy import Config
@@ -14,6 +16,7 @@ app = Config.CELERY
 
 @app.task
 def mark_task_done(analysis_id):
+    """Increment the number of finished tasks of the given analysis."""
     with Config.DATABASE.atomic():
         # This query is not an `UPDATE` because we need `save()` to be executed
         # for the `state` field to be recalculated. The atomic()
@@ -25,6 +28,11 @@ def mark_task_done(analysis_id):
 
 @app.task
 def request_extraction(analysis_id):
+    """
+    Send a request to buildbot to start the dependency straction phase of
+    the analysis.
+
+    """
     analysis = Analysis.get_by_id(analysis_id)
     response = requests.post(
         f"{Config.BUILDBOT_API}/change_hook/base",
@@ -39,5 +47,9 @@ def request_extraction(analysis_id):
 
 @app.task
 def notify_user(webhook, analysis_id, state):
+    """
+    Call the user given endpoint to notify their analysis is finished.
+
+    """
     response = requests.post(webhook, json={'id': analysis_id, 'state': state})
     response.raise_for_status()
