@@ -1,3 +1,6 @@
+.PHONY: ALL image start stop down logs status plugins
+
+
 ALL: down image plugins start logs
 
 image:
