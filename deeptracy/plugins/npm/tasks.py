@@ -11,11 +11,14 @@ def npmjson2deps(rawgraph):
 
     def extract_dependencies(entries):
         for package_name, entry in entries.items():
-            yield {'installer': 'npm',
-                   'spec': entry['from'],
-                   'source': entry.get('resolved', 'npm'),
-                   'name': package_name,
-                   'version': entry['version']}
+            try:
+                yield {'installer': 'npm',
+                       'spec': entry['from'],
+                       'source': entry.get('resolved', 'npm'),
+                       'name': package_name,
+                       'version': entry['version']}
+            except KeyError as exc:
+                print("Cannot get mandatory field %s" % exc)
             if 'dependencies' in entry:
                 yield from extract_dependencies(entry['dependencies'])
 
@@ -37,7 +40,7 @@ def npm_install(repopath, path=".", **kwargs):
 
     yield AppendStdout(res.stdout)
     yield AppendStderr(res.stderr)
-    with open("/tmp/npmdeps.json", "r") as f:
+    with open("/tmp/npmdeps.json", "r", encoding='utf-8') as f:
         yield SetProperty("dependencies",
                           list(npmjson2deps(f.read())))
 
