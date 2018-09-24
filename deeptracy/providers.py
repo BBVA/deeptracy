@@ -97,7 +97,7 @@ def patton(method, dependencies):
         timeout=10)
 
     if response.status_code != 200:
-        print("Something went wrong!", response.staus_code, response.text)
+        print("Something went wrong!", response.status_code, response.text)
         return
     else:
         vulns = response.json()
