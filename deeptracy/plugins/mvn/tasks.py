@@ -6,6 +6,11 @@ from washer.worker.actions import CreateNamedLog, AppendToLog
 from washer.worker.actions import SetProperty
 from washer.worker.commands import washertask
 
+# Bigger size limit to allow whole results to be transmitted from the workers.
+# TODO: Split big messages into chunks instead of raising this limit
+from twisted.spread import banana
+banana.SIZE_LIMIT *= 10
+
 
 def mvntgf2deps(rawgraph):
     # 65982709 org.springframework:spring-expression:jar:4.3.13.RELEASE:compile
@@ -38,13 +43,17 @@ def mvn_dependencytree(repopath, path=".", **kwargs):
     with c.cd(repopath):
         with c.cd(path):
             deps = c.run(("mvn dependency:tree"
-                          " -Doutput=/tmp/mvndeps.json"
+                          " -DoutputFile=/tmp/mvndeps.tgf"
                           " -DoutputType=tgf"),
                          warn=True)
 
-    yield AppendStdout(deps.stdout)
-    yield AppendStderr(deps.stderr)
-    with open("/tmp/mvndeps.json", "r") as f:
+    for line in deps.stdout.splitlines():
+        yield AppendStdout(line)
+
+    for line in deps.stderr.splitlines():
+        yield AppendStderr(line)
+
+    with open("/tmp/mvndeps.tgf", "r") as f:
         yield SetProperty("dependencies",
                           list(mvntgf2deps(f.read())))
 
