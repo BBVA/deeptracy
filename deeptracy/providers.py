@@ -1,18 +1,17 @@
+"""
+This module contains the vulnerability providers.
+
+"""
+# pylint: disable=no-member,no-else-return
 import collections
-import datetime
 import fnmatch
 import functools
-import json
 import requests
-import time
 
 from playhouse.shortcuts import model_to_dict
 import celery
 
 from deeptracy import Config
-from deeptracy import model
-from deeptracy.model import Analysis
-from deeptracy.model import Artifact
 from deeptracy.model import Vulnerability
 from deeptracy.tasks import app
 
@@ -34,24 +33,8 @@ def analyze_artifacts(artifacts):
     Given a list of `Artifact` objects return a Celery group to analyze them.
 
     """
-    def group_by_provider(acc, entry):
-        artifact, providers = entry
-        for provider in providers:
-            acc[provider].add(artifact)
-        return acc
-
-    # [(artifact1, (provider1, provider2)),
-    #  (artifact2, (provider2)),
-    #  (artifact3, (provider1, provider3))]
     providers_by_artifact = get_providers_for_artifacts(artifacts)
-
-    # {provider1: {artifact1, artifact3},
-    #  provider2: {artifact1, artifact2},
-    #  provider3: {artifact3}}
-    grouped_providers = functools.reduce(
-        group_by_provider,
-        providers_by_artifact,
-        collections.defaultdict(set))
+    grouped_providers = group_artifacts_by_provider(providers_by_artifact)
 
     # group(provider1.s([artifact1{asdict}, artifact3{asdict}]),
     #       provider2.s([artifact1{asdict}, artifact2{asdict}]),
@@ -63,13 +46,61 @@ def analyze_artifacts(artifacts):
 
 
 def get_providers_for_artifacts(artifacts):
+    """
+    Return a set of providers for each given artifact.
+
+    Given::
+
+        [artifact1, artifact2, artifact3]
+
+    Returns::
+
+        [(artifact1, (provider1, provider2)),
+         (artifact2, (provider2)),
+         (artifact3, (provider1, provider3))]
+
+    """
     for artifact in artifacts:
         yield (artifact, providers_for_source(artifact.source))
 
 
-def provider(pattern, enabled=True, **kwargs):
-    def _provider(f):
-        task = app.task(f)
+def group_artifacts_by_provider(artifacts_with_providers):
+    """
+    Return a dictionary with providers as keys and the set of artifact to check
+    for each one.
+
+    Given::
+
+        [(artifact1, (provider1, provider2)),
+         (artifact2, (provider2)),
+         (artifact3, (provider1, provider3))]
+
+    Returns::
+
+        {provider1: {artifact1, artifact3},
+         provider2: {artifact1, artifact2},
+         provider3: {artifact3}}
+
+    """
+    def _group_by_provider(acc, entry):
+        artifact, providers = entry
+        for cprov in providers:
+            acc[cprov].add(artifact)
+        return acc
+
+    return functools.reduce(
+        _group_by_provider,
+        artifacts_with_providers,
+        collections.defaultdict(set))
+
+
+def provider(pattern, enabled=True):
+    """
+    Decorator to register new providers by pattern.
+
+    """
+    def _provider(func):
+        task = app.task(func)
         if enabled:
             PROVIDERS[pattern].add(task)
         return task
@@ -77,6 +108,10 @@ def provider(pattern, enabled=True, **kwargs):
 
 
 def providers_for_source(source):
+    """
+    Return the set of provider matching the given source.
+
+    """
     providers = set()
     for pattern, fns in PROVIDERS.items():
         if fnmatch.fnmatch(source, pattern):
@@ -90,7 +125,7 @@ def patton(method, dependencies):
     response = requests.post(
         (f"http://{Config.PATTON_HOST}/api/v1/"
          f"check-dependencies?cpeDetailed=1"),
-        json={"method": "python",
+        json={"method": method,
               "libraries": [{"library": dependency['name'],
                              "version": dependency['version']}
                             for dependency in dependencies]},
@@ -115,16 +150,19 @@ def patton(method, dependencies):
 
 @provider("pypi")
 def patton_python_provider(dependencies):
+    """Pypi source is scanned with patton method `python`."""
     patton("python", dependencies)
 
 
 @provider("npm")
 def patton_npm_provider(dependencies):
+    """NPM source is scanned with patton method `simple_parser`."""
     patton("simple_parser", dependencies)
 
 
 @provider("pypi", enabled=WITH_SAFETY_LIB)
 def safety_provider(dependencies):
+    """Pypi source is scanned with `safety`."""
     for dependency in dependencies:
         packages = [safetyutil.Package(key=dependency['name'],
                                        version=dependency['version'])]

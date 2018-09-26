@@ -98,7 +98,8 @@ class Artifact(BaseModel):
     last_checked = peewee.DateTimeField(
         null=True,
         default=None,
-        help_text='Timestamp of the latest analysis performed for this artifact.')
+        help_text=('Timestamp of the latest analysis performed for '
+                   'this artifact.'))
 
     def analysis_needed(self):
         if self.last_checked is None:
@@ -106,11 +107,11 @@ class Artifact(BaseModel):
         else:
             return self.last_checked < (datetime.datetime.utcnow()
                                         + Config.MAX_ANALYSIS_INTERVAL)
+
     class Meta:
         indexes = (
             (('source', 'version', 'name'), True),  # Unique Index
         )
-
 
 
 class Vulnerability(BaseModel):
@@ -125,7 +126,8 @@ class Vulnerability(BaseModel):
         help_text='Extra information provided about the vulnerability.')
     last_seen = peewee.DateTimeField(
         default=datetime.datetime.utcnow,
-        help_text='Timestamp of the latest analysis detecting this vulnerability.')
+        help_text=('Timestamp of the latest analysis detecting '
+                   'this vulnerability.'))
 
     class Meta:
         indexes = (
