@@ -31,6 +31,7 @@ sphinxcontrib-actdiag = "*"
 sphinxcontrib-blockdiag = "*"
 sphinxcontrib-httpdomain = "*"
 sphinxcontrib-seqdiag = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.6"
