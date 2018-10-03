@@ -139,15 +139,18 @@ def dependencies_found(analysis_id):
 
     """
 
-    # Create database objects returning a list of scanneable artifacts.
-    artifacts = create_dependencies(analysis_id, bottle.request.json)
+    data = bottle.request.json
+    if data:
+        # Create database objects returning a list of scanneable artifacts.
+        artifacts = create_dependencies(analysis_id, bottle.request.json)
 
-    # Launch dependency scan and mark done when finished.
-    analysis_task = (
-        providers.analyze_artifacts(artifacts)  # Returns a group of tasks.
-        | tasks.mark_task_done.si(analysis_id)).delay()
-
-    return {'task_id': analysis_task.id, 'scanning': len(artifacts)}
+        # Launch dependency scan and mark done when finished.
+        analysis_task = (
+            providers.analyze_artifacts(artifacts)  # Returns a group of tasks.
+            | tasks.mark_task_done.si(analysis_id)).delay()
+        return {'task_id': analysis_task.id, 'scanning': len(artifacts)}
+    else:
+        return {'task_id': None, 'scanning': 0}
 
 
 @application.route('/analysis/<analysis_id>/vulnerabilities', method='POST')
