@@ -4,7 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-httpie = "*"
+bottle = "*"
+peewee = "*"
+environconfig = "*"
+redis = "*"
+requests = "*"
+safety = "*"
+celery = "*"
+"psycopg2-binary" = "*"
 
 [dev-packages]
 

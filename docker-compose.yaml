@@ -23,7 +23,7 @@ services:
           graphql-engine --database-url postgres://postgres:$${POSTGRES_PASSWORD}@postgres:5432/postgres serve --enable-console;
           "
     deeptracy-server:
-        image: deeptracy
+        image: deeptracy-server
         command: python -u -m deeptracy
         env_file:
             - deeptracy.env
@@ -36,7 +36,7 @@ services:
             - postgres
             - redis
     deeptracy-worker:
-        image: deeptracy
+        image: deeptracy-server
         command: celery worker -A deeptracy.tasks -A deeptracy.providers --loglevel=info
         env_file:
             - deeptracy.env
@@ -47,8 +47,8 @@ services:
             - postgres
             - redis
     deeptracy-buildbot:
-        image: deeptracy
-        command: /bin/sh -c "cd /deeptracy/buildbot && buildbot upgrade-master && buildbot start --nodaemon"
+        image: deeptracy-buildbot
+        command: /bin/sh -c "cd /buildbot && buildbot upgrade-master && buildbot start --nodaemon"
         ports:
             - "8010:8010"
             - "9989:9989"
@@ -61,8 +61,8 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
     hasura-migrate:
         build:
-            context: ./hasura/cli
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.hasuracli
+            context: .
         command: /bin/sh -c "sleep 10 && cd /hasura && /go/bin/hasura migrate apply"
         depends_on:
             - deeptracy-server

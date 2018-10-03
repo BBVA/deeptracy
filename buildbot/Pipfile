@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+environconfig = "*"
+requests = "*"
+python-language-server = {version = "*", extras = ["all"]}
+buildbot = "*"
+buildbot-washer = "==1.1.0"
+docker = "*"
+buildbot-www = "*"
+pyyaml = "*"
+txrequests = "*"
+"psycopg2-binary" = "*"
+buildbot-worker = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"
