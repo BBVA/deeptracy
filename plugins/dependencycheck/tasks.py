@@ -7,38 +7,54 @@ from washer.worker.actions import CreateNamedLog, AppendToLog
 from washer.worker.actions import SetProperty
 from washer.worker.commands import washertask
 
+# jq '.dependencies[0].vulnerabilities[0] | [.name, .description, .source]' dependency-check-report.json
+# jq '. | keys' dependency-check-report.json
+
+def select_maven_identifier(identifiers):
+    # Get the maven identifier
+    for identifier in identifiers:
+        if identifier.get('type', None) == 'maven':
+            return identifier
+
+
+def installation_from_identifier(identifier):
+    try:
+        spec = identifier['name']
+        groupid, artifactid, version = spec.split(':')
+        name = f'{groupid}:{artifactid}'
+        installation = {'installer': identifier['type'],
+                        'spec': spec,
+                        'source': 'central',  # ???
+                        'name': name,
+                        'version': version}
+    except Exception as exc:
+        # TODO: Proper logging
+        return None
+    else:
+        return installation
+
 
 def odc_dependencies(report):
-    def select_maven_identifier(identifiers):
-        # Get the maven identifier
-        for identifier in identifiers:
-            if identifier.get('type', None) == 'maven':
-                return identifier
-
-    def split_name(name):
-        # Will raise ValueError if the number of fields doesn't match
-        # unpacking.
-        groupid, artifactid, version = name.split(':')
-        return f'{groupid}:{artifact}', version
-
     dependencies = report.get('dependencies', [])
     for dependency in dependencies:
-        identifier = select_maven_identifier(dependency)
-        if identifier is not None:
-            try:
-                name, version = split_name(identifier['name'])
-            except ValueError:
-                continue
-            else:
-                yield {'installer': identifier['type'],
-                       'spec': identifier['name'],
-                       'source': 'central',  # ???
-                       'name': name,
-                       'version': version}
+        identifier = select_maven_identifier(dependency.get('identifiers', []))
+        installation = installation_from_identifier(identifier)
+        if installation is not None:
+            yield installation
 
 
 def odc_vulnerabilities(report):
-    pass
+    dependencies = report.get('dependencies', [])
+    for dependency in dependencies:
+        identifier = select_maven_identifier(dependency.get('identifiers', []))
+        vulnerabilities = dependency.get('vulnerabilities', [])
+        installation = installation_from_identifier(identifier)
+        if installation and vulnerabilities:
+            for vulnerability in vulnerabilities:
+                yield {'provider': 'owasp-dependency-check',
+                       'reference': vulnerability['name'],
+                       'details': vulnerability,
+                       'installation': installation}
 
 
 @washertask
@@ -60,6 +76,6 @@ def dependency_check(repopath, path=".", **kwargs):
     with open("/tmp/dependency-check-report.json", "r") as f:
         report = json.load(f)
         yield SetProperty("dependencies", list(odc_dependencies(report)))
-    #    yield SetProperty("vulnerabilities", odc_vulnerabilities(report))
+        yield SetProperty("vulnerabilities", list(odc_vulnerabilities(report)))
 
     return True

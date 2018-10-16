@@ -5,12 +5,14 @@ The webapp is defined using bottle.
 
 """
 # pylint: disable=invalid-name,no-member,unsubscriptable-object
+
 from deeptracy import Config
 from deeptracy import providers
 from deeptracy import tasks
 from deeptracy.model import Analysis
+from deeptracy.model import register_installations
 from deeptracy.model import Target
-from deeptracy.model import create_dependencies
+from deeptracy.model import Vulnerability
 
 import bottle
 
@@ -122,8 +124,9 @@ def extraction_failed(analysis_id):
         analysis.save()
 
 
-@application.route('/analysis/<analysis_id>/dependencies', method='POST')
-def dependencies_found(analysis_id):
+@application.route('/analysis/<analysis_id>/<execution_id>/dependencies',
+                   method='POST')
+def dependencies_found(analysis_id, execution_id):
     """
     Installation data from buildbot.
 
@@ -138,27 +141,63 @@ def dependencies_found(analysis_id):
     .. note:: Internal API
 
     """
-
-    data = bottle.request.json
-    if data:
+    installations = bottle.request.json
+    if installations:
         # Create database objects returning a list of scanneable artifacts.
-        artifacts = create_dependencies(analysis_id, bottle.request.json)
+        artifacts = register_installations(analysis_id, execution_id,
+                                           installations)
+        analysis_needed = {a for a in artifacts if a.analysis_needed()}
 
         # Launch dependency scan and mark done when finished.
         analysis_task = (
-            providers.analyze_artifacts(artifacts)  # Returns a group of tasks.
+            providers.analyze_artifacts(analysis_needed)  # <- group of tasks
             | tasks.mark_task_done.si(analysis_id)).delay()
-        return {'task_id': analysis_task.id, 'scanning': len(artifacts)}
+        return {'task_id': analysis_task.id, 'scanning': len(analysis_needed)}
     else:
         return {'task_id': None, 'scanning': 0}
 
 
-@application.route('/analysis/<analysis_id>/vulnerabilities', method='POST')
-def vulnerabilities_found(analysis_id):
+@application.route('/analysis/<analysis_id>/<execution_id>/vulnerabilities',
+                   method='POST')
+def vulnerabilities_found(analysis_id, execution_id):
     """
     Vulnerability data from buildbot.
+
+    Requires a JSON list of objects with the following keys:
+        * provider: Name of the system providing the vulnerability information.
+        * reference: Provider unique identifier of the vulnerability.
+        * details: Extended JSON metadata.
+        * installation: JSON object containing:
+            * installer: The system used to install the dependency.
+            * spec: The full specification used by the user to request the
+                    package.
+            * source: Entity providing the artifact.
+            * name: The real package name.
+            * version: The installed version of the package.
 
     .. note:: Internal API
 
     """
-    pass
+    vulnerabilities = bottle.request.json
+    if vulnerabilities:
+        installations = [v['installation'] for v in vulnerabilities]
+
+        # Create database objects returning a list of scanneable artifacts.
+        artifacts = register_installations(analysis_id, execution_id,
+                                           installations)
+        for vulnerability, artifact in zip(vulnerabilities, artifacts):
+            # Attach vulnerability to each artifact
+            Vulnerability.get_or_create(
+                artifact=artifact,
+                provider=vulnerability["provider"],
+                reference=vulnerability["reference"],
+                details=vulnerability["details"])
+
+        analysis_needed = {a for a in artifacts if a.analysis_needed()}
+        # Launch dependency scan and mark done when finished.
+        analysis_task = (
+            providers.analyze_artifacts(analysis_needed)
+            | tasks.mark_task_done.si(analysis_id)).delay()
+        return {'task_id': analysis_task.id, 'scanning': len(artifacts)}
+    else:
+        return {'task_id': None, 'scanning': 0}

@@ -5,6 +5,26 @@ name = "pypi"
 
 [packages]
 httpie = "*"
+sphinxcontrib-actdiag = "*"
+sphinxcontrib-blockdiag = "*"
+sphinxcontrib-httpdomain = "*"
+sphinxcontrib-seqdiag = "*"
+bottle = "*"
+peewee = "*"
+environconfig = "*"
+redis = "*"
+requests = "*"
+python-language-server = "*"
+buildbot = "*"
+buildbot-washer = "*"
+docker = "*"
+buildbot-www = "*"
+txrequests = "*"
+"psycopg2-binary" = "*"
+safety = "*"
+celery = "*"
+Sphinx = "*"
+PyYAML = "*"
 
 [dev-packages]
 

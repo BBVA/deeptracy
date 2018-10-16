@@ -140,37 +140,46 @@ class Installation(BaseModel):
         Analysis,
         backref='dependencies',
         help_text='Cause of the installation.')
+    execution = peewee.UUIDField(
+        help_text='Identifier of the installer execution.')
     installer = peewee.CharField(
         help_text='Name of the system used to perform the installation.')
     spec = peewee.CharField(
         help_text='The user specification to the installer.')
     artifact = peewee.ForeignKeyField(
         Artifact,
-        backref='analyses',
+        backref='installations',
         help_text='The installed artifact.')
 
+    class Meta:
+        indexes = (
+            (('analysis', 'execution', 'artifact'), True),  # Unique Index
+        )
 
-def create_dependencies(analysis_id, dependencies):
+
+def register_installations(analysis_id, execution_id, installations):
     """
-    Register Installations for an Analysis, creating Artifacts when necessary.
+    Register Installations for an Analysis under one execution context,
+    creating Artifacts when necessary.
 
     Return a list of the artifacts needing analysis.
+
     """
-    artifacts = set()
+    artifacts = list()
     with Config.DATABASE.atomic():
         analysis = Analysis.get_by_id(analysis_id)
-        for dependency in dependencies:
-            artifact, _ = Artifact.get_or_create(
-                source=dependency['source'],
-                name=dependency['name'],
-                version=dependency['version'])
-            Installation.create(
+        for installation in installations:
+            artifact, created = Artifact.get_or_create(
+                source=installation['source'],
+                name=installation['name'],
+                version=installation['version'])
+            artifacts.append(artifact)
+            Installation.get_or_create(
                 analysis=analysis,
-                installer=dependency['installer'],
-                spec=dependency['spec'],
+                execution=execution_id,
+                installer=installation['installer'],
+                spec=installation['spec'],
                 artifact=artifact)
-            if artifact.analysis_needed():
-                artifacts.add(artifact)
     return artifacts
 
 
