@@ -9,4 +9,3 @@
    configuration
    usage
    api
-   model
