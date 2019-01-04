@@ -12,6 +12,7 @@ requests = "*"
 safety = "*"
 celery = "*"
 "psycopg2-binary" = "*"
+ipython = "*"
 
 [dev-packages]
 
