@@ -1,4 +1,4 @@
-VERSIONS = latest
+VERSIONS = 4.0.2
 
 all: $(VERSIONS)
 
