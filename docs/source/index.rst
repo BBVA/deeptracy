@@ -7,5 +7,6 @@
    architecture
    installation
    configuration
+   plugins
    usage
    api
