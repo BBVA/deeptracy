@@ -1,0 +1,61 @@
+version: '3.6'
+services:
+
+  redis:
+    image: redis
+
+  graphql-engine:
+    image: hasura/graphql-engine:v1.0.0-alpha12
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
+    command: >
+      /bin/sh -c "
+      sleep 2 ; graphql-engine --database-url postgres://$${POSTGRES_USER}:$${POSTGRES_PASSWORD}@$${POSTGRES_HOST}:5432/$${POSTGRES_DB} serve --enable-console;
+      "
+  deeptracy-server:
+    image: bbvalabs/deeptracy-server
+    command: python -u -m deeptracy
+    env_file:
+      - deeptracy-config.env
+    ports:
+      - "8088:8088"
+    depends_on:
+      - redis
+
+  deeptracy-worker:
+    image: bbvalabs/deeptracy-server
+    command: celery worker -A deeptracy.tasks -A deeptracy.providers --loglevel=info
+    env_file:
+      - deeptracy-config.env
+    depends_on:
+      - redis
+
+  deeptracy-buildbot:
+    image: bbvalabs/deeptracy-buildbot
+    command: /bin/sh -c "cd /buildbot && buildbot upgrade-master && buildbot start --nodaemon"
+    ports:
+      - "8010:8010"
+      - "9989:9989"
+    environment:
+      - DEEPTRACY_BACKEND_URL=http://deeptracy-server:8088
+      - BUILDBOT_DB_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
+    depends_on:
+      - deeptracy-server
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+
+  hasura-migrate:
+    build:
+      dockerfile: ../Dockerfile.hasuracli
+      context: .
+    command: /bin/sh -c "sleep 10 && cd /hasura && /go/bin/hasura migrate apply"
+    depends_on:
+      - deeptracy-server
+    volumes:
+      - ../hasura:/hasura
