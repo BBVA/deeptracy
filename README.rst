@@ -2,7 +2,7 @@ Welcome to Deeptracy’s documentation!
 =====================================
 
 What's Deeptracy
-----------------
+================
 
 Deeptracy scans your project dependencies to spot vulnerabilities.
 
