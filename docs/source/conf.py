@@ -66,7 +66,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = en
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -153,13 +153,13 @@ latex_elements = {
     # 'preamble': '',
 
     # Latex figure (float) alignment
-    #
+    #s/checkouts/readthedocs.org/user_builds/deeptracy/envs/changing_documentation/lib/py
     # 'figure_align': 'htbp',
 }
 pdf_break_level = 2
 pdf_breakside = "any"
 
-# Grouping the document tree into LaTeX files. List of tuples
+# Grouping ths/checkouts/readthedocs.org/user_builds/deeptracy/envs/changing_documentation/lib/pye document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
