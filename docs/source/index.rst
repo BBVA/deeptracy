@@ -1,8 +1,11 @@
 .. include:: ../../README.rst
 
+Documentation Index
+===================
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
    architecture
    installation
