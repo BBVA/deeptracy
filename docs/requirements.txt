@@ -2,6 +2,8 @@ sphinxcontrib-actdiag
 sphinxcontrib-blockdiag
 sphinxcontrib-httpdomain
 sphinxcontrib-seqdiag
+sphinx
+sphinx_rtd_theme
 bottle
 peewee
 environconfig
