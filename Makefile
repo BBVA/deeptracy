@@ -37,4 +37,6 @@ $(buildbot_plugins):
 	$(MAKE) --directory=$@
 
 docker_login:
+ifdef DOCKER_USER
 	docker login -u $${DOCKER_USER} -p $${DOCKER_PASS}
+endif

@@ -54,10 +54,10 @@ services:
 
   hasura-migrate:
     build:
-      dockerfile: ../Dockerfile.hasuracli
+      dockerfile: Dockerfile.hasuracli
       context: .
     command: /bin/sh -c "sleep 10 && cd /hasura && /go/bin/hasura migrate apply"
     depends_on:
       - deeptracy-server
     volumes:
-      - ../hasura:/hasura
+      - ./hasura:/hasura
