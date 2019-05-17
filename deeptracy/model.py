@@ -153,7 +153,7 @@ class Installation(BaseModel):
 
     class Meta:
         indexes = (
-            (('analysis', 'execution', 'artifact'), True),  # Unique Index
+            (('analysis', 'execution', 'artifact', 'spec'), True),  # Unique Index
         )
 
 
