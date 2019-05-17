@@ -77,6 +77,7 @@ The following variables are used to configure the Deeptracy server container:
 - DEBUG (default=False) Activate server debug mode.
 
 By default the ports exposed by each server are:
+
 - 8010 Buildbot server.
 - 8080 GraphQL engine.
 - 8088 Deeptracy server.
