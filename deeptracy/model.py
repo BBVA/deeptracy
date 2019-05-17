@@ -25,7 +25,7 @@ class BaseModel(signals.Model):
     id = peewee.UUIDField(primary_key=True, default=uuid.uuid4)
 
     class Meta:
-        database = Config.DATABASE
+        database = Config.POSTGRES
 
 
 class Target(BaseModel):
@@ -166,7 +166,7 @@ def register_installations(analysis_id, execution_id, installations):
 
     """
     artifacts = list()
-    with Config.DATABASE.atomic():
+    with Config.POSTGRES.atomic():
         analysis = Analysis.get_by_id(analysis_id)
         for installation in installations:
             artifact, created = Artifact.get_or_create(
@@ -186,10 +186,10 @@ def register_installations(analysis_id, execution_id, installations):
 def init():
     def is_ready():
         try:
-            with Config.DATABASE:
+            with Config.POSTGRES:
                 # Create database when empty
                 print('Creating tables')
-                Config.DATABASE.create_tables(BaseModel.__subclasses__())
+                Config.POSTGRES.create_tables(BaseModel.__subclasses__())
         except Exception:  # TODO: Capture specific exception
             return False
         else:
@@ -202,11 +202,11 @@ def init():
         time.sleep(1)
 
 
-if Config.DATABASE_HOST is not None:
-    Config.DATABASE.init(
-        Config.DATABASE_NAME,
-        user=Config.DATABASE_USER,
-        password=Config.DATABASE_PASS,
-        host=Config.DATABASE_HOST)
+if Config.POSTGRES_HOST is not None:
+    Config.POSTGRES.init(
+        Config.POSTGRES_DB,
+        user=Config.POSTGRES_USER,
+        password=Config.POSTGRES_PASSWORD,
+        host=Config.POSTGRES_HOST)
 else:
-    Config.DATABASE.init('deeptracy.db')
+    Config.POSTGRES.init('deeptracy.db')

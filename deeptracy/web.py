@@ -23,13 +23,13 @@ application = bottle.Bottle(autojson=True)
 
 @application.hook('before_request')
 def _connect_db():
-    Config.DATABASE.connect()
+    Config.POSTGRES.connect()
 
 
 @application.hook('after_request')
 def _close_db():
-    if not Config.DATABASE.is_closed():
-        Config.DATABASE.close()
+    if not Config.POSTGRES.is_closed():
+        Config.POSTGRES.close()
 
 
 @application.route('/analysis/', method='POST')
@@ -57,7 +57,7 @@ def analysis_create():
        {"id": "b6e98743-7830-4aef-adf6-6a0b022f778a"}
 
     """
-    with Config.DATABASE.atomic():
+    with Config.POSTGRES.atomic():
         analysis = Analysis.create(
             target=Target.get_or_create(
                 repository=bottle.request.json['repository'],
@@ -77,7 +77,7 @@ def extraction_started(analysis_id):
     .. note:: Internal API
 
     """
-    with Config.DATABASE.atomic():
+    with Config.POSTGRES.atomic():
         analysis = Analysis.get(Analysis.id == analysis_id)
         # TODO: Check analysis state or implement a state machine inside the
         # model
@@ -103,7 +103,7 @@ def extraction_succeeded(analysis_id):
     .. note:: Internal API
 
     """
-    with Config.DATABASE.atomic():
+    with Config.POSTGRES.atomic():
         analysis = Analysis.get(Analysis.id == analysis_id)
         analysis.state = 'ANALYZYING'
         analysis.task_count = int(bottle.request.json['task_count'])
@@ -118,7 +118,7 @@ def extraction_failed(analysis_id):
     .. note:: Internal API
 
     """
-    with Config.DATABASE.atomic():
+    with Config.POSTGRES.atomic():
         analysis = Analysis.get(Analysis.id == analysis_id)
         analysis.state = 'FAILURE'
         analysis.save()

@@ -18,19 +18,19 @@ class Config(environconfig.EnvironConfig):
     # Postgres configuration.
     # Do not pass HOST to have a Sqlite in-memory database.
     #
-    DATABASE_NAME = environconfig.StringVar(default='deeptracy')
-    DATABASE_USER = environconfig.StringVar(default=None)
-    DATABASE_HOST = environconfig.StringVar(default=None)
-    DATABASE_PASS = environconfig.StringVar(default=None)
+    POSTGRES_DB = environconfig.StringVar(default='deeptracy')
+    POSTGRES_USER = environconfig.StringVar(default=None)
+    POSTGRES_HOST = environconfig.StringVar(default=None)
+    POSTGRES_PASSWORD = environconfig.StringVar(default=None)
 
     @environconfig.MethodVar
     @functools.lru_cache()
-    def DATABASE(env):
+    def POSTGRES(env):
         """
         Return a peewee database handler with the given user configuration.
 
         """
-        if env.DATABASE_HOST is None:
+        if env.POSTGRES_HOST is None:
             return peewee.SqliteDatabase(None)
         else:
             return peewee.PostgresqlDatabase(None)
