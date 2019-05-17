@@ -12,4 +12,5 @@ Documentation Index
    configuration
    plugins
    usage
+   running
    api
