@@ -46,7 +46,7 @@ services:
 # BUILDBOT_WEB_URL must be changed to the public hostname:port in order to get application URLs be built correctly.
       - DEEPTRACY_BACKEND_URL=http://deeptracy-server:8088
       - BUILDBOT_DB_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
-      - BUILDBOT_WEB_URL=http://localhost:8010
+      - BUILDBOT_WEB_URL
     depends_on:
       - deeptracy-server
     volumes:
