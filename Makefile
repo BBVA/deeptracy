@@ -4,9 +4,9 @@ plugins_npm = plugins/npm
 plugins_python = plugins/python
 buildbot_plugins = $(plugins_dependencycheck) $(plugins_mvn) $(plugins_npm) $(plugins_python)
 
-.PHONY: ALL image start stop down logs status plugins $(buildbot_plugins)
+.PHONY: ALL image start stop down logs status plugins workers $(buildbot_plugins)
 
-ALL: down image plugins start logs
+ALL: down image plugins workers start logs
 
 image: docker_login
 	docker build . -f Dockerfile.server -t bbvalabs/deeptracy-server
@@ -30,6 +30,12 @@ logs:
 
 status:
 	cd compose && docker-compose -f docker-compose.yaml -f docker-compose-database.yml ps
+
+workers: docker_login
+	for dir_name in workers/* ; do docker build $$dir_name -t bbvalabs/deeptracy-worker-`awk -F / '{ print $$2 }' <<< $$dir_name` ; done
+ifdef DOCKER_USER
+	for dir_name in workers/* ; do docker push bbvalabs/deeptracy-worker-`awk -F / '{ print $$2 }' <<< $$dir_name` ; done
+endif
 
 plugins: docker_login $(buildbot_plugins)
 
