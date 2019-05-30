@@ -23,6 +23,11 @@ services:
     command: python -u -m deeptracy
     env_file:
       - deeptracy-config.env
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
     ports:
       - "8088:8088"
     depends_on:
@@ -33,6 +38,11 @@ services:
     command: celery worker -A deeptracy.tasks -A deeptracy.providers --loglevel=info
     env_file:
       - deeptracy-config.env
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
     depends_on:
       - redis
 
