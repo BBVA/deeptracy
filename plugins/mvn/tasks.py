@@ -26,7 +26,7 @@ def mvntgf2deps(rawgraph):
         else:
             match=exp.match(line)
             if match:
-                name = ":".join([match.group('group_id'), 
+                name = ":".join([match.group('group_id'),
                                match.group('artifact_id')])
                 yield {'installer': 'mvn',
                        'spec': line.split()[1],
@@ -36,16 +36,26 @@ def mvntgf2deps(rawgraph):
 
 
 @washertask
-def mvn_dependencytree(repopath, path=".", **kwargs):
+def mvn_dependencytree(repopath, path=".", maven_config=None, **kwargs):
     import invoke
     c = invoke.Context()
 
     with c.cd(repopath):
         with c.cd(path):
-            deps = c.run(("mvn dependency:tree"
-                          " -DoutputFile=/tmp/mvndeps.tgf"
-                          " -DoutputType=tgf"),
-                         warn=True)
+            if maven_config is not None:
+                maven_config_path = tempfile.mkstemp()
+                with open(maven_config_path, mode="w") as config:
+                    config.write(maven_config)
+                deps = c.run(("mvn dependency:tree"
+                              " -DoutputFile=/tmp/mvndeps.tgf"
+                              " -DoutputType=tgf"
+                              " -s ") + maven_config_path,
+                             warn=True)
+            else:
+                deps = c.run(("mvn dependency:tree"
+                              " -DoutputFile=/tmp/mvndeps.tgf"
+                              " -DoutputType=tgf"),
+                             warn=True)
 
     for line in deps.stdout.splitlines():
         yield AppendStdout(line)

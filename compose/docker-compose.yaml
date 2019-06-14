@@ -60,7 +60,8 @@ services:
     depends_on:
       - deeptracy-server
     volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./secrets:/secrets
 
   hasura-migrate:
     build:
