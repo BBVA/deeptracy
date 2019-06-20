@@ -38,18 +38,21 @@ def mvntgf2deps(rawgraph):
 @washertask
 def mvn_dependencytree(repopath, path=".", maven_config=None, **kwargs):
     import invoke
+    import tempfile
+
     c = invoke.Context()
 
     with c.cd(repopath):
         with c.cd(path):
             if maven_config is not None:
                 maven_config_path = tempfile.mkstemp()
-                with open(maven_config_path, mode="w") as config:
+
+                with open(maven_config_path[1], mode="w") as config:
                     config.write(maven_config)
                 deps = c.run(("mvn dependency:tree"
                               " -DoutputFile=/tmp/mvndeps.tgf"
                               " -DoutputType=tgf"
-                              " -s ") + maven_config_path,
+                              " -s ") + maven_config_path[1],
                              warn=True)
             else:
                 deps = c.run(("mvn dependency:tree"
