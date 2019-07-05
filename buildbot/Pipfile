@@ -6,12 +6,12 @@ name = "pypi"
 [packages]
 environconfig = "*"
 requests = "*"
-python-language-server = {version = "*", extras = ["all"]}
-buildbot = "*"
-buildbot-washer = "==1.1.0"
+python-language-server = {version = "*",extras = ["all"]}
+buildbot = "==1.8.2"
+buildbot-washer = "==1.2.0"
 docker = "*"
 buildbot-www = "*"
-pyyaml = "*"
+pyyaml = "==3.13"
 txrequests = "*"
 "psycopg2-binary" = "*"
 buildbot-worker = "*"

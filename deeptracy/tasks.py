@@ -17,7 +17,7 @@ app = Config.CELERY
 @app.task
 def mark_task_done(analysis_id):
     """Increment the number of finished tasks of the given analysis."""
-    with Config.DATABASE.atomic():
+    with Config.POSTGRES.atomic():
         # This query is not an `UPDATE` because we need `save()` to be executed
         # for the `state` field to be recalculated. The atomic()
         # context-manager should protect us against race conditions.
