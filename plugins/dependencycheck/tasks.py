@@ -58,9 +58,17 @@ def odc_vulnerabilities(report):
 
 
 @washertask
-def dependency_check(repopath, path=".", **kwargs):
+def dependency_check(repopath, path=".", maven_config=None, **kwargs):
     import invoke
+    import tempfile
+
     c = invoke.Context()
+
+    if maven_config is not None:
+        maven_config_path = tempfile.mkstemp()
+
+        with open(maven_config_path[1], mode="w") as config:
+            config.write(maven_config)
 
     project_path = os.path.join(repopath, path)
     scan = c.run((f"/usr/share/dependency-check/bin/dependency-check.sh "
