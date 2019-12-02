@@ -148,14 +148,14 @@ def patton(method, dependencies):
                             details=dict(cve))
 
 
-@provider("pypi")
+@provider("pypi", enabled=bool(Config.PATTON_HOST))
 def patton_python_provider(dependencies):
     """Pypi source is scanned with patton method `python`."""
     patton("python", dependencies)
 
 
 @provider("npm")
-def patton_npm_provider(dependencies):
+def patton_npm_provider(dependencies, enabled=bool(Config.PATTON_HOST)):
     """NPM source is scanned with patton method `simple_parser`."""
     patton("simple_parser", dependencies)
 
@@ -170,7 +170,8 @@ def safety_provider(dependencies):
                              key=Config.SAFETY_API_KEY,
                              db_mirror='',
                              cached=False,
-                             ignore_ids=[])
+                             ignore_ids=[],
+                             proxy=None)
         for vuln in vulns:
             Vulnerability.get_or_create(
                 artifact=dependency['id'],
