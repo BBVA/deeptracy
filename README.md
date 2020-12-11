@@ -1,3 +1,5 @@
+# CAVEAT EMPTOR: This project is not being maintained anymore. Use with caution!
+
 Deeptracy
 =========
 
